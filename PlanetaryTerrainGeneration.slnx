@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="PlanetaryTerrainGeneration/PlanetaryTerrainGeneration.vcxproj" Id="88c0e3b0-749f-4f27-8f81-ebedda0ae814" />
+</Solution>
