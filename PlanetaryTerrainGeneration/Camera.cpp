@@ -28,6 +28,7 @@ glm::mat4 Camera::getProjectionMatrix() const {
 
 void Camera::processOrbit(float deltaYaw, float deltaPitch) {
     yaw += deltaYaw;
+    yaw = fmodf(yaw, 360.0f);
     pitch += deltaPitch;
     pitch = std::clamp(pitch, -pitchLimit, pitchLimit);
 }
@@ -43,6 +44,8 @@ static void scrollCallback(GLFWwindow* /*w*/, double /*xoff*/, double yoff) {
 
 void updateCamera(double delta) {
     float move = camera.orbitSpeed * (float)delta;
+
+	 camera.processOrbit(move, 0.0f); // temporary auto rotation, adjust later
 
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) camera.processOrbit(-move, 0.0f);
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) camera.processOrbit(move, 0.0f);

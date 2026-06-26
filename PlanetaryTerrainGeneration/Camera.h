@@ -9,7 +9,7 @@ public:
     float yaw = 0.0f;      // Horizontal angle (degrees)
     float pitch = 0.0f;    // Vertical angle (degrees, clamped)
 
-    float orbitSpeed = 60.0f; // Degrees per second when key held
+    float orbitSpeed = 30.0f; // Degrees per second when key held
     float zoomSpeed = 0.5f;
     float minRadius = 1.5f;
     float maxRadius = 10.0f;
