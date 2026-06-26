@@ -58,13 +58,13 @@ int main() {
         double delta = currentFrameTime - lastTime;
         lastTime = currentFrameTime;
 
+        if (delta > 0.1) delta = 0.1;
+
         update(delta);
         render();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
-
-        while (glfwGetTime() - currentFrameTime < frameTime) {}
     }
 
     cleanup();
