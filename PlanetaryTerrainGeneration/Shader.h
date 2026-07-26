@@ -40,7 +40,11 @@ struct Shader {
     void setVec3(const char* n, const glm::vec3& v) const { glUniform3fv(glGetUniformLocation(ID, n), 1, glm::value_ptr(v)); }
     void setFloat(const char* n, float v) const { glUniform1f(glGetUniformLocation(ID, n), v); }
     void setInt(const char* n, int v) const { glUniform1i(glGetUniformLocation(ID, n), v); }
+    void setVec2(const char* n, const glm::vec2& v) const { glUniform2fv(glGetUniformLocation(ID, n), 1, glm::value_ptr(v)); }
 };
 
-inline Shader mainShader;
-inline void initShaders() { mainShader = Shader("main.vert", "main.frag"); }
+inline Shader mainShader, pixelationShader;
+inline void initShaders() {
+    mainShader = Shader("main.vert", "main.frag");
+    pixelationShader = Shader("pixelation.vert", "pixelation.frag");
+}

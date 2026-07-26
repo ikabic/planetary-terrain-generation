@@ -131,11 +131,14 @@
     <None Include="main.frag" />
     <None Include="main.vert" />
     <None Include="packages.config" />
+    <None Include="pixelation.frag" />
+    <None Include="pixelation.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Planet.cpp" />
+    <ClCompile Include="PostProcessor.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="CubeFace.cpp" />
   </ItemGroup>
@@ -143,6 +146,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CubeFace.h" />
     <ClInclude Include="Planet.h" />
+    <ClInclude Include="PostProcessor.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Util.h" />

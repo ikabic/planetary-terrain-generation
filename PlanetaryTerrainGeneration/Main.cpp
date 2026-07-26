@@ -7,6 +7,9 @@
 #include "Shader.h"
 #include "Renderer.h"
 #include "Camera.h"
+#include "PostProcessor.h"
+
+static PostProcessor postProcessor;
 
 static int init() {
     glfwInit();
@@ -36,9 +39,11 @@ static void initCamera() {
 }
 
 static void render() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    postProcessor.begin();
 
     drawPlanet();
+
+    postProcessor.render(pixelationShader);
 }
 
 static void update(double delta) {
@@ -50,6 +55,7 @@ int main() {
 
     initCamera();
     initShaders();
+    postProcessor.init(screenWidth, screenHeight);
     setupCallbacks(window);
 
     lastTime = glfwGetTime();
@@ -67,6 +73,7 @@ int main() {
         glfwPollEvents();
     }
 
+    postProcessor.cleanup();
     cleanup();
     return 0;
 }
