@@ -16,6 +16,24 @@
     <Filter Include="Source Files\Shaders">
       <UniqueIdentifier>{fa624a77-808c-42d2-bfd5-35332203dccb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Planet">
+      <UniqueIdentifier>{a1662058-52b7-4dba-b93e-50d1037b8df2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Planet">
+      <UniqueIdentifier>{6e60b12f-0cc2-49c1-98c0-b5e41c7ce468}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Palette">
+      <UniqueIdentifier>{babe50f1-7fe4-4054-ad95-724e96417d79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Palette">
+      <UniqueIdentifier>{ffdcf585-0d23-4a81-9320-177d8fb87ae9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Terrain">
+      <UniqueIdentifier>{7b86977c-62a7-4807-94e6-8dacdb381926}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Terrain">
+      <UniqueIdentifier>{2899b781-2762-4ece-b8d8-7fece5d96830}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -23,6 +41,12 @@
       <Filter>Source Files\Shaders</Filter>
     </None>
     <None Include="main.vert">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="pixelation.frag">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="pixelation.vert">
       <Filter>Source Files\Shaders</Filter>
     </None>
   </ItemGroup>
@@ -36,11 +60,26 @@
     <ClCompile Include="Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Planet.cpp">
+      <Filter>Source Files\Planet</Filter>
+    </ClCompile>
     <ClCompile Include="CubeFace.cpp">
+      <Filter>Source Files\Planet</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Planet.cpp">
+    <ClCompile Include="PaletteGenerator.cpp">
+      <Filter>Source Files\Palette</Filter>
+    </ClCompile>
+    <ClCompile Include="PaletteManager.cpp">
+      <Filter>Source Files\Palette</Filter>
+    </ClCompile>
+    <ClCompile Include="Randomiser.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SurfaceGenerator.cpp">
+      <Filter>Source Files\Terrain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -56,10 +95,28 @@
     <ClInclude Include="Util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Planet.h">
+      <Filter>Header Files\Planet</Filter>
+    </ClInclude>
     <ClInclude Include="CubeFace.h">
+      <Filter>Header Files\Planet</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Planet.h">
+    <ClInclude Include="SurfaceGenerator.h">
+      <Filter>Header Files\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="PaletteGenerator.h">
+      <Filter>Header Files\Palette</Filter>
+    </ClInclude>
+    <ClInclude Include="PaletteManager.h">
+      <Filter>Header Files\Palette</Filter>
+    </ClInclude>
+    <ClInclude Include="Palette.h">
+      <Filter>Header Files\Palette</Filter>
+    </ClInclude>
+    <ClInclude Include="Randomiser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

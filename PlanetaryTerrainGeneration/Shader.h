@@ -41,6 +41,9 @@ struct Shader {
     void setFloat(const char* n, float v) const { glUniform1f(glGetUniformLocation(ID, n), v); }
     void setInt(const char* n, int v) const { glUniform1i(glGetUniformLocation(ID, n), v); }
     void setVec2(const char* n, const glm::vec2& v) const { glUniform2fv(glGetUniformLocation(ID, n), 1, glm::value_ptr(v)); }
+	void setBool(const char* n, bool v) const { glUniform1i(glGetUniformLocation(ID, n), (int)v); }
+    void setVec3Array(const char* n, const std::vector<glm::vec3>& v) const { if (v.empty()) return; glUniform3fv(glGetUniformLocation(ID, n), static_cast<GLsizei>(v.size()), &v[0].x); }
+    void setFloatArray(const char* n, const std::vector<float>& v) const { if (v.empty()) return;  glUniform1fv(glGetUniformLocation(ID, n), static_cast<GLsizei>(v.size()), v.data()); }
 };
 
 inline Shader mainShader, pixelationShader;

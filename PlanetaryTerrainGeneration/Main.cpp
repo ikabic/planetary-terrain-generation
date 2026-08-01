@@ -8,6 +8,7 @@
 #include "Renderer.h"
 #include "Camera.h"
 #include "PostProcessor.h"
+#include "PostProcessor.h"
 
 static PostProcessor postProcessor;
 
@@ -39,11 +40,16 @@ static void initCamera() {
 }
 
 static void render() {
-    postProcessor.begin();
+    if (isPixelated) {
+        postProcessor.begin();
+        drawPlanet();
+        postProcessor.render(pixelationShader);
+	} else {
+        postProcessor.end();
+		drawPlanet();
+	}
 
-    drawPlanet();
-
-    postProcessor.render(pixelationShader);
+    drawDebugUI();
 }
 
 static void update(double delta) {
@@ -54,6 +60,7 @@ int main() {
     if (init() != 0) return -1;
 
     initCamera();
+    initImGUI(window);
     initPlanet();
     initShaders();
     postProcessor.init(screenWidth, screenHeight);

@@ -46,6 +46,8 @@ void updateCamera(double delta) {
 
 	//camera.processOrbit(move, 0.0f); // temporary auto rotation, adjust later
 
+	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) isPixelated = !isPixelated;
+
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) camera.processOrbit(-move, 0.0f);
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) camera.processOrbit(move, 0.0f);
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) camera.processOrbit(0.0f, move);

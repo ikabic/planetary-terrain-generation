@@ -10,6 +10,7 @@ public:
 
     void init(int width, int height);
     void begin();
+	void end();
     void render(const Shader& shader, float pixelScale = 6.0f);
     void resize(int newWidth, int newHeight);
     void cleanup();

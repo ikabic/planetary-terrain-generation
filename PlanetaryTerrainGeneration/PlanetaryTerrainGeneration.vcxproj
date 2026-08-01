@@ -137,14 +137,23 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="PaletteGenerator.cpp" />
+    <ClCompile Include="PaletteManager.cpp" />
     <ClCompile Include="Planet.cpp" />
     <ClCompile Include="PostProcessor.cpp" />
+    <ClCompile Include="Randomiser.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="CubeFace.cpp" />
+    <ClCompile Include="SurfaceGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CubeFace.h" />
+    <ClInclude Include="Palette.h" />
+    <ClInclude Include="PaletteGenerator.h" />
+    <ClInclude Include="PaletteManager.h" />
+    <ClInclude Include="Randomiser.h" />
+    <ClInclude Include="SurfaceGenerator.h" />
     <ClInclude Include="Planet.h" />
     <ClInclude Include="PostProcessor.h" />
     <ClInclude Include="Renderer.h" />

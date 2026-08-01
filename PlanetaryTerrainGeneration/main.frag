@@ -1,23 +1,37 @@
-#version 330 core
+﻿#version 330 core
 
-in vec3 fragPos;
-in vec3 normal;
+in float elevation;
+in vec3 worldPos;
 
 out vec4 fragColor;
 
-uniform vec3 lightPos;
-uniform vec3 lightColor;
-uniform vec3 objectColor;
+uniform bool useLighting;
+uniform vec3 lightDir;
+
+uniform vec3 colours[16];
+uniform float upperBounds[16];
+uniform int paletteSize;
+
+float calculateToonLighting() {
+    vec3 normal = normalize(worldPos);
+
+    float light = max(dot(normal, lightDir), 0.0);
+
+    if (light > 0.75) return 1.00;
+    else if (light > 0.2) return 0.75;
+    else return 0.45;
+}
+
+vec3 terrainColor(float e) {
+    for (int i = 0; i < paletteSize-1; i++) {
+        if (elevation < upperBounds[i]) return colours[i];
+    }
+    return colours[paletteSize-1];
+}
 
 void main() {
-    float ambientStrength = 0.1;
-    vec3 ambient = ambientStrength * lightColor;
-
-    vec3 norm = normalize(normal);
-    vec3 lightDir = normalize(lightPos - fragPos);
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = diff * lightColor;
-
-    vec3 result = (ambient + diffuse) * objectColor;
-    fragColor = vec4(result, 1.0);
+    vec3 color = terrainColor(elevation);
+    float lightFactor = calculateToonLighting();
+    
+    fragColor = vec4(color * (useLighting ? lightFactor : 1.0), 1.0);
 }

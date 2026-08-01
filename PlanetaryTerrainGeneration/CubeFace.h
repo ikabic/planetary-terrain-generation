@@ -10,4 +10,5 @@ public:
 
     void build(glm::vec3 localUp);
     void draw() const;
+    void drawDebugUI();
 };
