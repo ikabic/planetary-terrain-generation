@@ -4,12 +4,14 @@
 
 #include "CubeFace.h"
 
-struct Planet {
+class Planet {
     CubeFace faces[6];
     int resolution = 64;
+	unsigned int seed = 0;
 
+public:
     Planet() = default;
-    Planet(int resolution);
+    Planet(int resolution, unsigned int seed);
 
     void build();
     void draw() const;

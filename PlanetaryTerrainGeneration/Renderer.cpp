@@ -8,13 +8,20 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Planet.h"
+#include "SurfaceGenerator.h"
+#include "Randomiser.h"
+
+
+void initPlanet() {
+    planet = Planet(128, 24241);
+    planet.build();
+}
 
 void drawPlanet() {
-    planet = Planet(64);
-    planet.build();
+    float rotationAngle = glfwGetTime() * 0.2f/*rotationSpeed*/;
 
     mainShader.use();
-    mainShader.setMat4("model", glm::mat4(1.0f));
+    mainShader.setMat4("model", glm::rotate(glm::mat4(1.0f), rotationAngle, glm::vec3(0.0f, 1.0f, 0.0f)));
     mainShader.setMat4("view", camera.getViewMatrix());
     mainShader.setMat4("projection", camera.getProjectionMatrix());
 

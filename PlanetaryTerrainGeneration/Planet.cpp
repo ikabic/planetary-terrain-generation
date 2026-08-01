@@ -9,11 +9,11 @@ static const glm::vec3 directions[6] = {
     { 0,  0, -1},
 };
 
-Planet::Planet(int resolution) : resolution(resolution) {}
+Planet::Planet(int resolution, unsigned int seed) : resolution(resolution), seed(seed) {}
 
 void Planet::build() {
     for (int i = 0; i < 6; i++)
-        faces[i].build(directions[i], resolution);
+        faces[i].build(directions[i]);
 }
 
 void Planet::draw() const {

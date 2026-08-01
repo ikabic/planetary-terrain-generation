@@ -54,6 +54,7 @@ int main() {
     if (init() != 0) return -1;
 
     initCamera();
+    initPlanet();
     initShaders();
     postProcessor.init(screenWidth, screenHeight);
     setupCallbacks(window);

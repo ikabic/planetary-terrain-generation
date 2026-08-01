@@ -7,8 +7,7 @@
 #include "Camera.h"
 #include "Util.h"
 
-Camera::Camera(glm::vec3 startPos, glm::vec3 upVec, float startYaw, float startPitch): up(upVec), yaw(startYaw), pitch(startPitch)
-{
+Camera::Camera(glm::vec3 startPos, glm::vec3 upVec, float startYaw, float startPitch): up(upVec), yaw(startYaw), pitch(startPitch) {
     radius = glm::length(startPos);
 }
 
@@ -45,7 +44,7 @@ static void scrollCallback(GLFWwindow* /*w*/, double /*xoff*/, double yoff) {
 void updateCamera(double delta) {
     float move = camera.orbitSpeed * (float)delta;
 
-	 camera.processOrbit(move, 0.0f); // temporary auto rotation, adjust later
+	//camera.processOrbit(move, 0.0f); // temporary auto rotation, adjust later
 
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) camera.processOrbit(-move, 0.0f);
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) camera.processOrbit(move, 0.0f);
