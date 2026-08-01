@@ -25,7 +25,8 @@ Palette generatePalette(int numColours, PaletteType type) {
 	Palette palette;
 	randomiser.deriveSeed("palette");
 
-	float baseHue = randomiser.floatRange(0.0f, 360.0f), baseSaturation = randomiser.floatRange(0.5f, 0.85f), baseValue = randomiser.floatRange(0.5f, 0.7f);
+	float baseHue = randomiser.floatRange(0.0f, 360.0f), baseSaturation = randomiser.floatRange(0.25f, 0.6f), baseValue = randomiser.floatRange(0.5f, 0.9f);
+	constexpr float hueJitterRange = 6.0f;
 	float boundStep = 1.0f / numColours;
 
 	auto wrapHue = [](float h) {
@@ -85,6 +86,8 @@ Palette generatePalette(int numColours, PaletteType type) {
 		}
 
 		upperBound = randomiser.floatRange(i * boundStep, (i + 1) * boundStep);
+
+		h = wrapHue(h + randomiser.floatRange(-hueJitterRange, hueJitterRange));
 		palette.colours.push_back(hsvToRgb(h, s, v));
 		palette.upperBounds.push_back(upperBound);
 	}
