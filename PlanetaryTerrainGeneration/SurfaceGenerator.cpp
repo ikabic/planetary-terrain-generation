@@ -32,42 +32,41 @@ void SurfaceGenerator::seedGenerator() {
 	cellular.SetSeed(seed);
 }
 
-float SurfaceGenerator::generateElevation(glm::vec3 position) {
+float SurfaceGenerator::generateElevation(glm::vec3 pos) {
 	seedGenerator();
 
-    glm::vec3 p = position;
-    int type = params.type; // Default type, can be changed based on context
+    int type = params.type;
 
 	auto phase = []() { return randomiser.floatRange(0, glm::two_pi<float>()); };
 
     switch (type) {
-    case 0: { // GasGiant
-        float warpX = domainWarp.GetNoise(p.x, p.y, p.z);
-        float warpStrenght = params.warpStrength;       // 0.01 - 0.1
+    case 0: {   // Gas/ice giants
+        float warpX = domainWarp.GetNoise(pos.x, pos.y, pos.z);
+        float warpFrequency = randomiser.floatRange(0.01f, 0.055f);
 
         // Latitudinal sine wave bands along Y-axis
-        float lat = p.y + warpX * warpStrenght;
+        float lat = pos.y + warpX * warpFrequency;
         float bands = (std::sin(lat * 11.0f + phase()) + std::sin(lat * 15.0f + phase()) + std::sin(lat * 27.0f + phase())) * 0.5f + 0.5f;
 
         // Cloud turbulence detail
-        float cloudDetail = simplex.GetNoise(p.x * 2.5f, p.y * 2.5f, p.z * 2.5f) * 0.5f + 0.5f;
+        float cloudDetail = simplex.GetNoise(pos.x * 2.5f, pos.y * 2.5f, pos.z * 2.5f) * 0.5f + 0.5f;
 
         float bandsWeight = 0.7f, cloudWeight = 0.3f;
         return glm::clamp(bands * bandsWeight + cloudDetail * cloudWeight, 0.0f, 1.0f);
     }
 
-    case 1: { // Terrestrial
-        float warpX = domainWarp.GetNoise(p.x, p.y, p.z);
-        float warpY = domainWarp.GetNoise(p.y, p.z, p.x);
-        float warpStrenght = 0.062f;
+    case 1: {   // Tectonic planets
+        float warpX = domainWarp.GetNoise(pos.x, pos.y, pos.z);
+        float warpY = domainWarp.GetNoise(pos.y, pos.z, pos.x);
+        float warpFrequency = 0.062f;
 
         // Continental base
-        float baseNoise = simplex.GetNoise(p.x + warpX * warpStrenght, p.y + warpY * warpStrenght, p.z) * 0.5f + 0.5f;
+        float baseNoise = simplex.GetNoise(pos.x + warpX * warpFrequency, pos.y + warpY * warpFrequency, pos.z) * 0.5f + 0.5f;
         baseNoise = std::pow(baseNoise, 1.2f);
 
         // Mountain ridges
-        warpStrenght = 0.77f;
-        float mountainNoise = ridged.GetNoise(p.x + warpX * warpStrenght, p.y + warpY * warpStrenght, p.z) * 0.5f + 0.5f;
+        warpFrequency = 0.77f;
+        float mountainNoise = ridged.GetNoise(pos.x + warpX * warpFrequency, pos.y + warpY * warpFrequency, pos.z) * 0.5f + 0.5f;
 
         float height = baseNoise;
         float oceanThreshold = 0.45f, mountainHeight = 0.44f;
@@ -78,29 +77,123 @@ float SurfaceGenerator::generateElevation(glm::vec3 position) {
         return glm::clamp(height, 0.0f, 1.0f);
     }
 
-    case 2: { // Desert
-        float warpStrenght = 0.8f;
-        float warpX = domainWarp.GetNoise(p.x * warpStrenght, p.y * warpStrenght, p.z * warpStrenght);
+    case 2: {   // Aeolian/fluvial planets
+        float warpFrequency = 0.8f;
+        float warpX = domainWarp.GetNoise(pos.x * warpFrequency, pos.y * warpFrequency, pos.z * warpFrequency);
 
         float baseFrequency = 1.5f;
-        float baseTerrain = simplex.GetNoise(p.x * baseFrequency, p.y * baseFrequency, p.z * baseFrequency) * 0.5f + 0.5f;
+        float baseTerrain = simplex.GetNoise(pos.x * baseFrequency, pos.y * baseFrequency, pos.z * baseFrequency) * 0.5f + 0.5f;
 
-        float canyon = ridged.GetNoise(p.x + warpX, p.y + warpX, p.z) * 0.5f + 0.5f;
+        float canyon = ridged.GetNoise(pos.x + warpX, pos.y + warpX, pos.z) * 0.5f + 0.5f;
 
         float baseWeight = 0.7f, canyonWeight = 0.3f;
         return glm::clamp(baseTerrain * baseWeight + canyon * canyonWeight, 0.0f, 1.0f);
     }
 
-    case 3: { // CrateredMoon
+    case 3: {   // Cratered planets
         float baseFrequency = 2.7f;
-        float base = simplex.GetNoise(p.x * baseFrequency, p.y * baseFrequency, p.z * baseFrequency) * 0.5f + 0.5f;
+        float base = simplex.GetNoise(pos.x * baseFrequency, pos.y * baseFrequency, pos.z * baseFrequency) * 0.5f + 0.5f;
 
         float craterFrequency = 1.46f;
-        float craters = cellular.GetNoise(p.x * craterFrequency, p.y * craterFrequency, p.z * craterFrequency) * 0.5f + 0.5f;
+        float craters = cellular.GetNoise(pos.x * craterFrequency, pos.y * craterFrequency, pos.z * craterFrequency) * 0.5f + 0.5f;
 
         float craterThreshold = 0.3f;
         float craterDepth = std::max(0.0f, craterThreshold - std::abs(craters));
         return glm::clamp(base - craterDepth, 0.0f, 1.0f);
+    }
+
+    case 4: {   // Volcanic planets
+        float baseFrequency = 1.1f;
+        float basePlain = simplex.GetNoise(pos.x * baseFrequency, pos.y * baseFrequency, pos.z * baseFrequency) * 0.5f + 0.5f;
+        basePlain = std::pow(basePlain, 1.6f);
+
+        float domeFrequency = 2.2f;
+        float domes = cellular.GetNoise(pos.x * domeFrequency, pos.y * domeFrequency, pos.z * domeFrequency) * 0.5f + 0.5f;
+
+        float domeThreshold = 0.4f;
+        float domeHeight = std::max(0.0f, domeThreshold - std::abs(domes));
+
+        float rimDetail = ridged.GetNoise(pos.x * 3.0f, pos.y * 3.0f, pos.z * 3.0f) * 0.5f + 0.5f;
+
+        float height = basePlain + domeHeight * (1.0f + rimDetail * 0.4f);
+        return glm::clamp(height, 0.0f, 1.0f);
+    }
+
+    case 5: {   // Glacial/ice planets
+        float plainFrequency = 0.9f;
+        float convectionCells = cellular.GetNoise(pos.x * plainFrequency, pos.y * plainFrequency, pos.z * plainFrequency) * 0.5f + 0.5f;
+        float smoothPlain = std::pow(convectionCells, 3.0f) * 0.15f;
+
+        float maskFrequency = 0.6f;
+        float mountainMask = simplex.GetNoise(pos.x * maskFrequency, pos.y * maskFrequency, pos.z * maskFrequency) * 0.5f + 0.5f;
+
+        float mountainThreshold = 0.55f;
+        float iceMountains = ridged.GetNoise(pos.x * 2.2f, pos.y * 2.2f, pos.z * 2.2f) * 0.5f + 0.5f;
+
+        float height = smoothPlain;
+        if (mountainMask > mountainThreshold)
+            height += iceMountains * (mountainMask - mountainThreshold) * 1.6f;
+
+        return glm::clamp(height, 0.0f, 1.0f);
+    }
+
+    case 6: {   // Lava worlds
+        float warpFrequency = 0.65f, warpStrenght = 0.55f;
+        glm::vec3 warpedPos = pos + glm::vec3(
+            simplex.GetNoise(pos.x * warpFrequency + 0.0f, pos.y * warpFrequency + 0.0f, pos.z * warpFrequency + 0.0f),
+            simplex.GetNoise(pos.x * warpFrequency + 17.3f, pos.y * warpFrequency + 17.3f, pos.z * warpFrequency + 17.3f),
+            simplex.GetNoise(pos.x * warpFrequency + 43.1f, pos.y * warpFrequency + 43.1f, pos.z * warpFrequency + 43.1f)
+        ) * warpStrenght;
+
+        // Primary crack network
+        float crackFrequency = 1.35f * 100.0f; // * 100.0f to cancel out the default 0.01f frequency of FastNoiseLite
+        float cracks = cellular.GetNoise(warpedPos.x * crackFrequency, warpedPos.y * crackFrequency, warpedPos.z * crackFrequency) * 0.5f + 0.5f;
+        float primaryRifts = std::pow(1.0f - cracks, 2.9f);
+
+        // Branching fissures
+        float fissureFrequency = 1.5f;
+        float fineCracks = ridged.GetNoise(warpedPos.x * fissureFrequency, warpedPos.y * fissureFrequency, warpedPos.z * fissureFrequency) * 0.5f + 0.5f;
+        fineCracks = std::pow(fineCracks, 3.0f) * 0.9f;
+
+        float oceanFrequency = 0.35f;
+        float oceanMask = simplex.GetNoise(pos.x * oceanFrequency, pos.y * oceanFrequency, pos.z * oceanFrequency) * 0.5f + 0.5f;
+
+        // Crust baseline
+        float crustFrequency = 1.8f;
+        float crustRoughness = simplex.GetNoise(pos.x * crustFrequency, pos.y * crustFrequency, pos.z * crustFrequency) * 0.5f + 0.5f;
+        float baseCrust = crustRoughness * 0.08f;
+
+        float totalRifts = glm::clamp(primaryRifts + fineCracks, 0.0f, 1.0f);
+        float height = baseCrust + totalRifts * 0.80f;
+
+        float oceanThreshold = 0.40f;
+        if (oceanMask < oceanThreshold) {
+            float oceanFactor = (oceanThreshold - oceanMask) / oceanThreshold;
+            height = glm::mix(height, 0.95f, oceanFactor * 0.90f);
+        }
+
+        return glm::clamp(height, 0.0f, 1.0f);
+
+    }
+
+    case 7: {   // Water worlds
+        float warpX = domainWarp.GetNoise(pos.x, pos.y, pos.z);
+        float warpY = domainWarp.GetNoise(pos.y, pos.z, pos.x);
+        float warpFrequency = 0.05f;
+
+        float baseNoise = simplex.GetNoise(pos.x + warpX * warpFrequency, pos.y + warpY * warpFrequency, pos.z) * 0.5f + 0.5f;
+        baseNoise = std::pow(baseNoise, 2.4f);
+
+        float rippleFrequency = 6.0f;
+        float ripples = simplex.GetNoise(pos.x * rippleFrequency, pos.y * rippleFrequency, pos.z * rippleFrequency) * 0.5f + 0.5f;
+
+        float seaLevel = 0.82f;
+        float height = baseNoise * 0.35f + ripples * 0.05f;
+
+        if (baseNoise > seaLevel)
+            height += (baseNoise - seaLevel) * 3.0f;
+
+        return glm::clamp(height, 0.0f, 1.0f);
     }
     }
 

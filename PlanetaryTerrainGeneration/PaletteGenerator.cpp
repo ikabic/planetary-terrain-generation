@@ -25,7 +25,8 @@ Palette generatePalette(int numColours, PaletteType type) {
 	Palette palette;
 	randomiser.deriveSeed("palette");
 
-	float baseHue = randomiser.floatRange(0.0f, 360.0f), baseSaturation = randomiser.floatRange(0.25f, 0.6f), baseValue = randomiser.floatRange(0.5f, 0.9f);
+	float baseHue = randomiser.floatRange(0.0f, 360.0f), baseSaturation = randomiser.floatRange(0.1f, 0.7f), baseValue = randomiser.floatRange(0.4f, 0.9f);
+
 	constexpr float hueJitterRange = 6.0f;
 	float boundStep = 1.0f / numColours;
 
@@ -35,6 +36,7 @@ Palette generatePalette(int numColours, PaletteType type) {
 	};
 
 	float maxSteps = (numColours > 1) ? static_cast<float>(numColours - 1) : 1.0f;
+	float hueSpread = randomiser.floatRange(15.0f, 30.0f);
 
 	for (int i = 0; i < numColours; i++) {
 		float h = baseHue, s = baseSaturation, v = baseValue, upperBound;
@@ -43,12 +45,11 @@ Palette generatePalette(int numColours, PaletteType type) {
 		case MONOCHROMATIC: {
 			h = baseHue;
 			s = (numColours == 1) ? baseSaturation : baseSaturation * (0.5f + 0.5f * (i / maxSteps));
-			v = (numColours == 1) ? baseValue : baseValue * (1.0f - 0.6f * (i / maxSteps));
+			v = (numColours == 1) ? baseValue : baseValue * (1.0f - 0.4f * (i / maxSteps));
 			break;
 		}
 		case ANALOGOUS: {
-			float spread = 40.0f;
-			float offset = (numColours == 1) ? 0.0f : ((float)i / maxSteps - 0.5f) * spread;
+			float offset = (numColours == 1) ? 0.0f : ((float)i / maxSteps - 0.5f) * hueSpread;
 			h = wrapHue(baseHue + offset);
 			break;
 		}
@@ -64,14 +65,14 @@ Palette generatePalette(int numColours, PaletteType type) {
 			int node = i % 3;
 			int cycle = i / 3;
 			h = wrapHue(baseHue + offsets[node] + cycle * 8.0f);
-			s = std::clamp(baseSaturation - (cycle * 0.12f), 0.1f, 1.0f);
+			s = std::clamp(baseSaturation - (cycle * 0.12f), 0.0f, 0.7f);
 			break;
 		}
 		case TRIADIC: {
 			int node = i % 3;
 			int cycle = i / 3;
 			h = wrapHue(baseHue + node * 120.0f);
-			v = std::clamp(baseValue - (cycle * 0.12f), 0.2f, 1.0f);
+			v = std::clamp(baseValue - (cycle * 0.12f), 0.3f, 0.9f);
 			break;
 		}
 		case TETRADIC: {
@@ -79,7 +80,19 @@ Palette generatePalette(int numColours, PaletteType type) {
 			int node = i % 4;
 			int cycle = i / 4;
 			h = wrapHue(baseHue + offsets[node]);
-			s = std::clamp(baseSaturation - (cycle * 0.12f), 0.1f, 1.0f);
+			s = std::clamp(baseSaturation - (cycle * 0.12f), 0.0f, 0.7f);
+			break;
+		}
+		case THERMAL: {
+			float t = (numColours > 1) ? 1.0f - (static_cast<float>(i) / maxSteps) : 1.0f; // 1 is hottest, 0 is coldest
+
+			constexpr float thermalHueSweep = 60.0f; // total hue travel from the coldest (start) to the hottest point
+			h = wrapHue(baseHue + thermalHueSweep * std::pow(t, 1.8f));
+
+			float sCurve = (t < 0.5f) ? (0.70f + 0.50f * t) : (1.0f - std::pow((t - 0.5f) / 0.5f, 2.5f));
+			s = std::clamp(baseSaturation * sCurve, 0.0f, 1.0f);
+
+			v = std::clamp(baseValue * std::pow(t, 0.5f), 0.03f, 1.0f);
 			break;
 		}
 		default: return Palette();

@@ -27,5 +27,4 @@ void Planet::draw() const {
 void Planet::randomiseTraits() {
 	//palette = paletteManager.get("earth");
 	palette = paletteManager.get();
-
 }

@@ -79,9 +79,9 @@ void drawDebugUI() {
     releaseInt(" Octaves", &params.octaves, 1, 10);
     releaseInt(" Color Num", &params.colorNum, 1, 15);
 
-    releaseInt("Seed", &params.seed, -99999, 99999);
+    releaseInt("Seed", &params.seed, 9, 4000000000);
 
-    releaseInt("Type", &params.type, 0, 3);
+    releaseInt("Type", &params.type, 0, 8);
 
     releaseFloat("Base Frequency", &params.baseFrequency, 0.001f, 10.0f);
 
@@ -91,7 +91,19 @@ void drawDebugUI() {
 
 	releaseInt("Use Warp", (int*)&params.useWarp, 0, 1);
     releaseFloat("Warp Strength", &params.warpStrength, 0.0f, 1.0f);
-    releaseEnum("Palette Type", &params.paletteType, 1, 6);
+    releaseEnum("Palette Type", &params.paletteType, 1, 7);
+
+	releaseFloat("Dome Frequency", &params.domeFrequency, 0.001f, 10.0f);
+	releaseFloat("Dome Threshold", &params.domeThreshold, 0.0f, 1.0f);
+
+	releaseFloat("Hue Min", &params.hueMin, 0.0f, 360.0f);
+	releaseFloat("Hue Max", &params.hueMax, 0.0f, 360.0f);
+	releaseFloat("Saturation Min", &params.saturationMin, 0.0f, 1.0f);
+	releaseFloat("Saturation Max", &params.saturationMax, 0.0f, 1.0f);
+	releaseFloat("Value Min", &params.valueMin, 0.0f, 1.0f);
+	releaseFloat("Value Max", &params.valueMax, 0.0f, 1.0f);
+
+	releaseFloat("Height Multiplier", &params.height, 0.01f, 10.0f);
 
     if (changed) {
         randomiser.setSeed(params.seed);

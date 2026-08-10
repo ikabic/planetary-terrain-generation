@@ -18,7 +18,15 @@ struct NoiseParams {
 
 	float craterFrequency = 2.0f, craterDepthMultiplier = 1.0f, craterThreshold = 0.45f;
 
-	float baseFrequency = 0.8f; // Base frequency for terrain generation
+	float baseFrequency = 0.8f, base2Frequency = 4.5f; // Base frequency for terrain generation
+
+	float domeFrequency = 1.2f, domeThreshold = 0.28f; // For volcanic planets
+
+	float hueMin = 0.0f, hueMax = 360.0f;
+	float saturationMin = 0.0f, saturationMax = 1.0f;
+	float valueMin = 0.0f, valueMax = 1.0f;
+
+	float height = 0.01f; // Multiplier for physical elevation
 };
 
 inline NoiseParams params;

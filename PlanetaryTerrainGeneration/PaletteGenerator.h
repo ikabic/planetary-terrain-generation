@@ -9,7 +9,8 @@ enum PaletteType {
 	COMPLEMENTARY,
 	SPLIT_COMPLEMENTARY,
 	TRIADIC,
-	TETRADIC
+	TETRADIC,
+	THERMAL
 };
 
 glm::vec3 hsvToRgb(float h, float s, float v);
