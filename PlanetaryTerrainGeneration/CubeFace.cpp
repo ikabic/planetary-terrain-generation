@@ -4,7 +4,7 @@
 #include "CubeFace.h"
 #include "SurfaceGenerator.h"
 
-void CubeFace::build(glm::vec3 localUp) {
+void CubeFace::build(glm::vec3 localUp, int type) {
     if (VAO != 0) {
         glDeleteVertexArrays(1, &VAO);
         glDeleteBuffers(1, &VBO);
@@ -25,7 +25,7 @@ void CubeFace::build(glm::vec3 localUp) {
             glm::vec3 pointOnUnitCube = localUp + (percent.x - 0.5f) * 2.0f * axisA + (percent.y - 0.5f) * 2.0f * axisB;
             glm::vec3 pointOnUnitSphere = glm::normalize(pointOnUnitCube);
 
-            float rawElevation = surfaceGenerator.generateElevation(pointOnUnitSphere);
+            float rawElevation = surfaceGenerator.generateElevation(type, pointOnUnitSphere);
 
             float physicalElevation, seaCutoff = 0.45f;
             if (rawElevation > seaCutoff) physicalElevation = 1.0f + (rawElevation - seaCutoff) * params.height; // 0.01f;

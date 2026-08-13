@@ -39,7 +39,7 @@ public:
 	SurfaceGenerator();
 	
 	void seedGenerator();
-    float generateElevation(glm::vec3 position);
+    float generateElevation(int type, glm::vec3 position);
 };
 
 inline SurfaceGenerator surfaceGenerator;

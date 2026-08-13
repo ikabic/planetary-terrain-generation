@@ -12,6 +12,11 @@ int Randomiser::intRange(int min, int max) {
 	return distribution(generator);
 }
 
+int Randomiser::weightedChoice(const std::vector<float>& weights) {
+	std::discrete_distribution<int> distribution(weights.begin(), weights.end());
+	return distribution(generator);
+}
+
 uint32_t Randomiser::deriveSeed(const std::string& name) {
 	std::hash<std::string> hasher;
 

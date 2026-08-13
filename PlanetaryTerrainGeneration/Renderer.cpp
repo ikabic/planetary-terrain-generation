@@ -16,8 +16,6 @@
 #include "PaletteManager.h"
 #include "Randomiser.h"
 
-static PaletteManager paletteManager("assets/palettes");
-
 void initImGUI(GLFWwindow* window) {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();

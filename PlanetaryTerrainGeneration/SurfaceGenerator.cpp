@@ -32,10 +32,8 @@ void SurfaceGenerator::seedGenerator() {
 	cellular.SetSeed(seed);
 }
 
-float SurfaceGenerator::generateElevation(glm::vec3 pos) {
+float SurfaceGenerator::generateElevation(int type, glm::vec3 pos) {
 	seedGenerator();
-
-    int type = params.type;
 
 	auto phase = []() { return randomiser.floatRange(0, glm::two_pi<float>()); };
 
@@ -55,7 +53,7 @@ float SurfaceGenerator::generateElevation(glm::vec3 pos) {
         return glm::clamp(bands * bandsWeight + cloudDetail * cloudWeight, 0.0f, 1.0f);
     }
 
-    case 1: {   // Tectonic planets
+    case 1: {   // Tectonic/terrestrial planets
         float warpX = domainWarp.GetNoise(pos.x, pos.y, pos.z);
         float warpY = domainWarp.GetNoise(pos.y, pos.z, pos.x);
         float warpFrequency = 0.062f;

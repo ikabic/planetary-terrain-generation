@@ -18,6 +18,7 @@ public:
 
     float floatRange(float min, float max);
     int intRange(int min, int max);
+	int weightedChoice(const std::vector<float>& weights);
 };
 
 extern Randomiser randomiser;
