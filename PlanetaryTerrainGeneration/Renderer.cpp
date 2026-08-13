@@ -29,10 +29,17 @@ void initPlanet() {
 }
 
 void drawPlanet() {
-    float rotationAngle = glfwGetTime() * 0.2f/*rotationSpeed*/;
+    float axialTilt = glm::radians(planet.getAxialTilt());
+    float rotationAngle = glfwGetTime() * planet.getRotationSpeed();
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::rotate(model, axialTilt, glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::rotate(model, rotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(planet.getSize()));
 
     mainShader.use();
-    mainShader.setMat4("model", glm::rotate(glm::mat4(1.0f), rotationAngle, glm::vec3(0.0f, 1.0f, 0.0f)));
+
+    mainShader.setMat4("model", model);
     mainShader.setMat4("view", camera.getViewMatrix());
     mainShader.setMat4("projection", camera.getProjectionMatrix());
 

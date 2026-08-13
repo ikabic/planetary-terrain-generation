@@ -29,7 +29,7 @@ class Planet {
     int numSatellites = 0;
 
     float rotationSpeed = 0.2f;
-    float tiltAngle = 0.0f; // degrees
+    float axialTilt = 0.0f; // axial tilt in degrees
 
     PlanetType type;
     Palette palette;
@@ -38,6 +38,9 @@ public:
     Planet() = default;
     Planet(int resolution, unsigned int seed);
 
+	float getSize() const { return size; }
+	float getAxialTilt() const { return axialTilt; }
+	float getRotationSpeed() const { return rotationSpeed; }
 	Palette& getPalette() { return palette; }
 
     void build();

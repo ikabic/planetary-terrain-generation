@@ -10,7 +10,7 @@ inline int screenHeight = 0;
 
 inline double lastTime = 0.0;
 
-inline bool isPixelated = false;
+inline bool isPixelated = true;
 
 inline int endProgram(const std::string& msg) {
     printf("ERROR: %s\n", msg.c_str());

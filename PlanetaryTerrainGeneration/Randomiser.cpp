@@ -15,6 +15,11 @@ int Randomiser::weightedChoice(const std::vector<float>& weights) {
 	return distribution(generator);
 }
 
+bool Randomiser::chance(float probability) {
+	std::bernoulli_distribution distribution(probability);
+	return distribution(generator);
+}
+
 uint32_t Randomiser::deriveSeed(const std::string& name) {
 	std::hash<std::string> hasher;
 
