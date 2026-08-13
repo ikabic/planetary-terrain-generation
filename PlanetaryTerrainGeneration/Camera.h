@@ -28,7 +28,7 @@ public:
     void processZoom(float delta);
 };
 
-inline Camera camera;
+inline Camera camera(glm::vec3(0.0f, 0.0f, 4.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 0.0f);;
 
 void updateCamera(double delta);
 void setupCallbacks(GLFWwindow* window);

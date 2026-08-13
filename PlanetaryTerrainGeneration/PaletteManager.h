@@ -20,4 +20,4 @@ public:
     Palette get(int typeId, float temperature = 0.5f);
 };
 
-extern PaletteManager paletteManager;
+inline PaletteManager paletteManager("assets/palettes", "assets/custom_palettes");

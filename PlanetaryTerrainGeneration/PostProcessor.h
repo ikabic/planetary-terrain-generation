@@ -28,4 +28,6 @@ private:
 
     void initFrameBuffer();
     void initQuad();
-}; 
+};
+
+inline PostProcessor postProcessor;

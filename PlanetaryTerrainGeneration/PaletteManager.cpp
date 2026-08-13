@@ -7,8 +7,6 @@
 #include "PaletteGenerator.h"
 #include "SurfaceGenerator.h"
 
-PaletteManager paletteManager("assets/palettes", "assets/custom_palettes");
-
 PaletteManager::PaletteManager(const std::string& configFolder, const std::string& customFolder) : configPalettes(loadConfig(configFolder)), customPalettes(loadCustom(customFolder)) { }
 
 using json = nlohmann::json;

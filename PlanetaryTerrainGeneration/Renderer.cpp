@@ -25,7 +25,6 @@ void initImGUI(GLFWwindow* window) {
 }
 
 void initPlanet() {
-    planet = Planet(128, 24241);
     planet.build();
 }
 

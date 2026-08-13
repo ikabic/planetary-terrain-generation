@@ -1,7 +1,5 @@
 #include "Randomiser.h"
 
-Randomiser randomiser;
-
 float Randomiser::floatRange(float min, float max) {
 	std::uniform_real_distribution<float> distribution(min, max);
 	return distribution(generator);

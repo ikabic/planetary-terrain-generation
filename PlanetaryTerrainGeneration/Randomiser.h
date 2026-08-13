@@ -21,4 +21,4 @@ public:
 	int weightedChoice(const std::vector<float>& weights);
 };
 
-extern Randomiser randomiser;
+inline Randomiser randomiser;

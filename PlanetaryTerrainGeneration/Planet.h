@@ -46,4 +46,4 @@ public:
     void randomiseTraits();
 };
 
-inline Planet planet;
+inline Planet planet(128, 24241);

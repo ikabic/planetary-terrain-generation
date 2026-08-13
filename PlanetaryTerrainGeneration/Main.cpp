@@ -8,9 +8,6 @@
 #include "Renderer.h"
 #include "Camera.h"
 #include "PostProcessor.h"
-#include "PostProcessor.h"
-
-static PostProcessor postProcessor;
 
 static int init() {
     glfwInit();
@@ -35,10 +32,6 @@ static int init() {
     return 0;
 }
 
-static void initCamera() {
-    camera = Camera(glm::vec3(0.0f, 0.0f, 4.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 0.0f);
-}
-
 static void render() {
     if (isPixelated) {
         postProcessor.begin();
@@ -59,7 +52,6 @@ static void update(double delta) {
 int main() {
     if (init() != 0) return -1;
 
-    initCamera();
     initImGUI(window);
     initPlanet();
     initShaders();
