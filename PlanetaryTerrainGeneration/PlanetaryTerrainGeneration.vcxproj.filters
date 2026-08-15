@@ -34,6 +34,9 @@
     <Filter Include="Source Files\Terrain">
       <UniqueIdentifier>{2899b781-2762-4ece-b8d8-7fece5d96830}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Planet Traits">
+      <UniqueIdentifier>{2c80c96e-2c60-4f8f-9b03-707f6207c473}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -118,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="Randomiser.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Satellite.h">
+      <Filter>Header Files\Planet Traits</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -18,4 +18,8 @@ struct PaletteParams {
 
 glm::vec3 hsvToRgb(float h, float s, float v);
 
+inline glm::vec3 getBaseColour() {
+	return hsvToRgb(randomiser.floatRange(0.0f, 360.0f), randomiser.floatRange(0.1f, 0.7f), randomiser.floatRange(0.4f, 0.9f));
+}
+
 Palette generatePalette(const PlanetPaletteConfig& planetConfig, float temperature);

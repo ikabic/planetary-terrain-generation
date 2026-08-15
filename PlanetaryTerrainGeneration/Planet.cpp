@@ -18,6 +18,8 @@ void Planet::build() {
 
     for (int i = 0; i < 6; i++)
         faces[i].build(directions[i], type);
+
+	generateSatellites();
 }
 
 void Planet::draw() const {
@@ -26,9 +28,10 @@ void Planet::draw() const {
 }
 
 void Planet::randomiseTraits() {
+    randomiser.deriveSeed("traits");
 	constexpr float minSize = 0.9f, maxSize = 1.1f;                                                         // size params
 	constexpr float alienProbability = 0.05f;                                                               // type params
-	constexpr int maxSatellites = 10;                                                                       // satellite params
+	constexpr int maxSatellites = 8;                                                                        // satellite params
 	constexpr float minSpeed = 0.05f, maxSpeed = 0.4f;                                                      // rotation speed params
 	constexpr float minTilt = 0.0f, maxTilt = 45.0f, extremeTilt = 180.0f, extremeTiltProbability = 0.1f;   // axial tilt params
 
@@ -43,16 +46,22 @@ void Planet::randomiseTraits() {
 	palette = paletteManager.get(type, temperature);
 
     int maxForSize = static_cast<int>(std::round(normalisedSize * maxSatellites)); // satellite count based on size
-    int satelliteCount = randomiser.intRange(0, maxForSize);
+    numSatellites = randomiser.intRange(0, maxForSize);
     
-    float speedCeiling = maxSpeed - (satelliteCount / float(maxSatellites)) * 0.2f; // rotation speed based on satellites (more moons, lower ceiling)
+    float speedCeiling = maxSpeed - (numSatellites / float(maxSatellites)) * 0.2f; // rotation speed based on satellites (more moons, lower ceiling)
     rotationSpeed = randomiser.floatRange(minSpeed, speedCeiling);
     
     // axial tilt based on satellite count and chance for extreme tilt
-	axialTilt = satelliteCount == 0 || randomiser.chance(extremeTiltProbability) ? randomiser.floatRange(minTilt, extremeTilt) : randomiser.floatRange(minTilt, maxTilt); 
+	axialTilt = numSatellites == 0 || randomiser.chance(extremeTiltProbability) ? randomiser.floatRange(minTilt, extremeTilt) : randomiser.floatRange(minTilt, maxTilt); 
 	
     hasAtmosphere = randomiser.chance(normalisedSize); // atmosphere based on size
 	// roll for athmosphere thickness and pattern based on temp and rotation speed
 
 	// roll for rings based on size, satellites and temp
+}
+
+void Planet::generateSatellites() {
+    randomiser.deriveSeed("satellite");
+    satellites.clear();
+    satellites.resize(numSatellites);
 }

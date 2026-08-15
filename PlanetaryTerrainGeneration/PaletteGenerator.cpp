@@ -24,8 +24,6 @@ glm::vec3 hsvToRgb(float h, float s, float v) {
 static PaletteParams generatePaletteParams(const PlanetPaletteConfig& planetConfig, float temperature) {
 	if (planetConfig.palettes.empty()) return PaletteParams();
 
-	randomiser.deriveSeed("palette");
-
 	std::vector<float> weights;
 	for (const auto& p : planetConfig.palettes) weights.push_back(p.weight);
 
@@ -146,6 +144,7 @@ Palette generateSelectedPalette(PaletteParams paletteParams) {
 }
 
 Palette generatePalette(const PlanetPaletteConfig& planetConfig, float temperature) {
+	randomiser.deriveSeed("palette");
 	PaletteParams paletteParams(generatePaletteParams(planetConfig, temperature));
 
 	return paletteParams.type == CUSTOM 

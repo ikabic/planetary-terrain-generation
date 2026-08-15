@@ -153,6 +153,7 @@
     <ClInclude Include="PaletteGenerator.h" />
     <ClInclude Include="PaletteManager.h" />
     <ClInclude Include="Randomiser.h" />
+    <ClInclude Include="Satellite.h" />
     <ClInclude Include="SurfaceGenerator.h" />
     <ClInclude Include="Planet.h" />
     <ClInclude Include="PostProcessor.h" />

@@ -3,4 +3,5 @@
 void initImGUI(GLFWwindow* window);
 void initPlanet();
 void drawPlanet();
+void drawSatellites();
 void drawDebugUI();

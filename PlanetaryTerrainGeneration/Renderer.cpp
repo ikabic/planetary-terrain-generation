@@ -24,8 +24,13 @@ void initImGUI(GLFWwindow* window) {
 	ImGui::StyleColorsDark();
 }
 
+std::unique_ptr<Planet> satelliteMesh;
+
 void initPlanet() {
     planet.build();
+
+    satelliteMesh = std::make_unique<Planet>(4, 24240);
+    satelliteMesh->build();
 }
 
 void drawPlanet() {
@@ -51,8 +56,34 @@ void drawPlanet() {
     mainShader.setFloatArray("upperBounds", planet.getPalette().upperBounds);
     mainShader.setInt("paletteSize", static_cast<int>(planet.getPalette().colours.size()));
 
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // wireframe
 	planet.draw();
+
+    drawSatellites();
+}
+
+void drawSatellites() {
+    mainShader.use();
+
+    for (const auto& satellite : planet.getSatellites()) {
+        float currentAngle = satellite.phase + glfwGetTime() * satellite.orbitSpeed;
+
+        glm::mat4 model = glm::mat4(1.0f);
+
+        model = glm::rotate(model, satellite.inclination, glm::vec3(0.0f, 0.0f, 1.0f)); // tilt orbital plane
+		model = glm::rotate(model, currentAngle, glm::vec3(0.0f, 1.0f, 0.0f)); // move along orbit
+        model = glm::translate(model, glm::vec3(satellite.orbitRadius, 0.0f, 0.0f)); // push out satellite from planet center to orbital radius
+        model = glm::scale(model, glm::vec3(satellite.size));
+
+        mainShader.setMat4("model", model);
+
+        mainShader.setBool("useLighting", false);
+
+        mainShader.setVec3Array("colours", std::vector<glm::vec3> { satellite.colour });
+        mainShader.setFloatArray("upperBounds", std::vector<float> { 1.0f });
+        mainShader.setInt("paletteSize", 1);
+
+        satelliteMesh->draw();
+    }
 }
 
 void drawDebugUI() {

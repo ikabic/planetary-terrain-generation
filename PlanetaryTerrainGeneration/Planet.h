@@ -4,6 +4,7 @@
 
 #include "CubeFace.h"
 #include "Palette.h"
+#include "Satellite.h"
 
 enum PlanetType {
 	GAS_ICE_GIANT,
@@ -27,6 +28,7 @@ class Planet {
 
     bool hasAtmosphere = true;
     int numSatellites = 0;
+    std::vector<Satellite> satellites;
 
     float rotationSpeed = 0.2f;
     float axialTilt = 0.0f; // axial tilt in degrees
@@ -42,11 +44,13 @@ public:
 	float getAxialTilt() const { return axialTilt; }
 	float getRotationSpeed() const { return rotationSpeed; }
 	Palette& getPalette() { return palette; }
+	std::vector<Satellite> getSatellites() const { return satellites; }
 
     void build();
     void draw() const;
 
     void randomiseTraits();
+    void generateSatellites();
 };
 
 inline Planet planet(128, 24241);
