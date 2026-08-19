@@ -62,11 +62,31 @@ void CubeFace::build(glm::vec3 localUp, int type) {
     glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
+    if (instanceVBO != 0) {
+        glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+
+        for (int i = 0; i < 4; i++) {
+            glEnableVertexAttribArray(2 + i);
+            glVertexAttribPointer(2 + i, 4, GL_FLOAT, GL_FALSE, sizeof(ParticleInstance), (void*)(i * sizeof(glm::vec4)));
+            glVertexAttribDivisor(2 + i, 1);
+        }
+
+        glEnableVertexAttribArray(6);
+        glVertexAttribPointer(6, 3, GL_FLOAT, GL_FALSE, sizeof(ParticleInstance), (void*)offsetof(ParticleInstance, colour));
+        glVertexAttribDivisor(6, 1);
+    }
+
     glBindVertexArray(0);
 }
 
 void CubeFace::draw() const {
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+}
+
+void CubeFace::drawInstanced(GLsizei instanceCount) const {
+    glBindVertexArray(VAO);
+    glDrawElementsInstanced(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0, instanceCount);
     glBindVertexArray(0);
 }

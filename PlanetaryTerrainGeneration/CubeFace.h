@@ -3,6 +3,13 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
+struct ParticleInstance {
+    glm::mat4 model;
+    glm::vec3 colour;
+};
+
+extern GLuint instanceVBO;
+
 class CubeFace {
 public:
     unsigned int VAO = 0, VBO = 0, EBO = 0;
@@ -10,4 +17,5 @@ public:
 
     void build(glm::vec3 localUp, int type);
     void draw() const;
+    void drawInstanced(GLsizei instanceCount) const;
 };

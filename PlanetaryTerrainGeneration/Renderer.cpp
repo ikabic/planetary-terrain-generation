@@ -25,8 +25,16 @@ void initImGUI(GLFWwindow* window) {
 }
 
 std::unique_ptr<Planet> satelliteMesh;
+GLuint instanceVBO = 0;
 
 void initPlanet() {
+    if (instanceVBO == 0) {
+        glGenBuffers(1, &instanceVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+        glBufferData(GL_ARRAY_BUFFER, 700 * sizeof(ParticleInstance), nullptr, GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
     planet.build();
 
     satelliteMesh = std::make_unique<Planet>(4, 24240);
@@ -62,7 +70,7 @@ void drawPlanet() {
 }
 
 void drawSatellites() {
-    mainShader.use();
+    float axialTilt = glm::radians(planet.getAxialTilt());
 
     for (const auto& satellite : planet.getSatellites()) {
         float currentAngle = satellite.phase + glfwGetTime() * satellite.orbitSpeed;
@@ -84,6 +92,36 @@ void drawSatellites() {
 
         satelliteMesh->draw();
     }
+
+    if (!planet.getHasRings()) return;
+
+    const auto& ringParticles = planet.getRingParticles();
+    std::vector<ParticleInstance> instanceData;
+    instanceData.reserve(ringParticles.size());
+
+    for (const auto& particle : ringParticles) {
+        float currentAngle = particle.phase + glfwGetTime() * particle.orbitSpeed;
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::rotate(model, axialTilt, glm::vec3(0.0f, 0.0f, 1.0f));
+
+        model = glm::rotate(model, particle.inclination, glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, currentAngle, glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::translate(model, glm::vec3(particle.orbitRadius, particle.verticalOffset, 0.0f));
+        model = glm::scale(model, glm::vec3(particle.size));
+
+        instanceData.push_back({ model, particle.colour });
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+    glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(ParticleInstance), instanceData.data(), GL_DYNAMIC_DRAW);
+
+    mainShader.setBool("useInstancing", true);
+    mainShader.setBool("useLighting", false);
+
+    satelliteMesh->drawInstanced(static_cast<GLsizei>(instanceData.size()));
+
+    mainShader.setBool("useInstancing", false);
 }
 
 void drawDebugUI() {

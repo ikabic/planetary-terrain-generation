@@ -27,8 +27,13 @@ class Planet {
     float size = 1.0f;
 
     bool hasAtmosphere = true;
-    int numSatellites = 0;
+
+    int satelliteCount = 0;
     std::vector<Satellite> satellites;
+
+    bool hasRings = false;
+	int ringCount = 0;
+    std::vector<Satellite> ringParticles;
 
     float rotationSpeed = 0.2f;
     float axialTilt = 0.0f; // axial tilt in degrees
@@ -44,13 +49,17 @@ public:
 	float getAxialTilt() const { return axialTilt; }
 	float getRotationSpeed() const { return rotationSpeed; }
 	Palette& getPalette() { return palette; }
+    bool getHasRings() const { return hasRings; }
 	std::vector<Satellite> getSatellites() const { return satellites; }
+    std::vector<Satellite> getRingParticles() const { return ringParticles; }
 
     void build();
     void draw() const;
+    void drawInstanced(GLsizei instanceCount) const;
 
     void randomiseTraits();
     void generateSatellites();
+    void generateRings();
 };
 
 inline Planet planet(128, 24241);

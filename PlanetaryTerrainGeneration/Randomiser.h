@@ -16,9 +16,11 @@ public:
 
     uint32_t deriveSeed(const std::string& name);
 
-    float floatRange(float min, float max);
+	float floatRange(float min, float max, float bias = 1.0f); // bias > 1.0f skews towards min, bias < 1.0f skews towards max
     int intRange(int min, int max);
+
 	int weightedChoice(const std::vector<float>& weights);
+
     bool chance(float probability);
 };
 

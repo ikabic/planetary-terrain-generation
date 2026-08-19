@@ -1,8 +1,12 @@
 #include "Randomiser.h"
 
-float Randomiser::floatRange(float min, float max) {
-	std::uniform_real_distribution<float> distribution(min, max);
-	return distribution(generator);
+float Randomiser::floatRange(float min, float max, float bias) {
+	std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
+
+	float t = distribution(generator);
+	t = std::pow(t, bias);
+
+	return min + (max - min) * t;
 }
 
 int Randomiser::intRange(int min, int max) {

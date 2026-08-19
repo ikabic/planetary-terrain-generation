@@ -21,6 +21,37 @@ glm::vec3 hsvToRgb(float h, float s, float v) {
 	return glm::vec3(r + m, g + m, b + m);
 }
 
+glm::vec3 rgbToHsv(float r, float g, float b) {
+	float maxVal = std::max({ r, g, b });
+	float minVal = std::min({ r, g, b });
+	float delta = maxVal - minVal;
+
+	float h = 0.0f, s = 0.0f, v = maxVal;
+
+	if (maxVal != 0.0f) s = delta / maxVal;
+
+	if (delta != 0.0f) {
+		if (maxVal == r) { h = 60.0f * std::fmod((g - b) / delta, 6.0f); }
+		else if (maxVal == g) { h = 60.0f * ((b - r) / delta + 2.0f); }
+		else { h = 60.0f * ((r - g) / delta + 4.0f); }
+
+		if (h < 0.0f) h += 360.0f;
+	}
+
+	return glm::vec3(h, s, v);
+}
+
+glm::vec3 adjustHsv(glm::vec3 rgb, float hueDelta, float satDelta, float valDelta) {
+	glm::vec3 hsv = rgbToHsv(rgb.x, rgb.y, rgb.z);
+
+	hsv.x = std::fmod(hsv.x + hueDelta, 360.0f);
+	if (hsv.x < 0.0f) hsv.x += 360.0f;
+	hsv.y = glm::clamp(hsv.y + satDelta, 0.0f, 1.0f);
+	hsv.z = glm::clamp(hsv.z + valDelta, 0.0f, 1.0f);
+
+	return hsvToRgb(hsv.x, hsv.y, hsv.z);
+}
+
 static PaletteParams generatePaletteParams(const PlanetPaletteConfig& planetConfig, float temperature) {
 	if (planetConfig.palettes.empty()) return PaletteParams();
 
@@ -39,9 +70,9 @@ static PaletteParams generatePaletteParams(const PlanetPaletteConfig& planetConf
 	float baseSat = randomiser.floatRange(sRange.x, sRange.y);
 	float baseVal = randomiser.floatRange(vRange.x, vRange.y);
 
-	int numColours = randomiser.intRange(selectedPalette.minColours, selectedPalette.maxColours);
+	int colourCount = randomiser.intRange(selectedPalette.minColours, selectedPalette.maxColours);
 
-	return PaletteParams(selectedPalette.type, numColours, baseHue, baseSat, baseVal);
+	return PaletteParams(selectedPalette.type, colourCount, baseHue, baseSat, baseVal);
 }
 
 static Palette constructCustomPalette(const PaletteConfig& selectedPalette) {
@@ -62,28 +93,28 @@ Palette generateSelectedPalette(PaletteParams paletteParams) {
 	Palette palette;
 
 	constexpr float hueJitterRange = 6.0f;
-	float boundStep = 1.0f / paletteParams.numColours;
+	float boundStep = 1.0f / paletteParams.colourCount;
 
 	auto wrapHue = [](float h) {
 		float result = std::fmod(h, 360.0f);
 		return (result < 0) ? result + 360.0f : result;
 	};
 
-	float maxSteps = (paletteParams.numColours > 1) ? static_cast<float>(paletteParams.numColours - 1) : 1.0f;
+	float maxSteps = (paletteParams.colourCount > 1) ? static_cast<float>(paletteParams.colourCount - 1) : 1.0f;
 	float hueSpread = randomiser.floatRange(15.0f, 30.0f);
 
-	for (int i = 0; i < paletteParams.numColours; i++) {
+	for (int i = 0; i < paletteParams.colourCount; i++) {
 		float h = paletteParams.baseHue, s = paletteParams.baseSat, v = paletteParams.baseVal, upperBound;
 
 		switch (paletteParams.type) {
 		case MONOCHROMATIC: {
 			h = paletteParams.baseHue;
-			s = (paletteParams.numColours == 1) ? paletteParams.baseSat : paletteParams.baseSat * (0.5f + 0.5f * (i / maxSteps));
-			v = (paletteParams.numColours == 1) ? paletteParams.baseVal : paletteParams.baseVal * (1.0f - 0.4f * (i / maxSteps));
+			s = (paletteParams.colourCount == 1) ? paletteParams.baseSat : paletteParams.baseSat * (0.5f + 0.5f * (i / maxSteps));
+			v = (paletteParams.colourCount == 1) ? paletteParams.baseVal : paletteParams.baseVal * (1.0f - 0.4f * (i / maxSteps));
 			break;
 		}
 		case ANALOGOUS: {
-			float offset = (paletteParams.numColours == 1) ? 0.0f : ((float)i / maxSteps - 0.5f) * hueSpread;
+			float offset = (paletteParams.colourCount == 1) ? 0.0f : ((float)i / maxSteps - 0.5f) * hueSpread;
 			h = wrapHue(paletteParams.baseHue + offset);
 			break;
 		}
@@ -118,7 +149,7 @@ Palette generateSelectedPalette(PaletteParams paletteParams) {
 			break;
 		}
 		case THERMAL: {
-			float t = (paletteParams.numColours > 1) ? 1.0f - (static_cast<float>(i) / maxSteps) : 1.0f; // 1 is hottest, 0 is coldest
+			float t = (paletteParams.colourCount > 1) ? 1.0f - (static_cast<float>(i) / maxSteps) : 1.0f; // 1 is hottest, 0 is coldest
 
 			constexpr float thermalHueSweep = 60.0f; // total hue travel from the coldest (start) to the hottest point
 			h = wrapHue(paletteParams.baseHue + thermalHueSweep * std::pow(t, 1.8f));

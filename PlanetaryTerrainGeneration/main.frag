@@ -2,11 +2,14 @@
 
 in float elevation;
 in vec3 worldPos;
+in vec3 instanceColour;
 
-out vec4 fragColor;
+out vec4 fragColour;
 
 uniform bool useLighting;
 uniform vec3 lightDir;
+
+uniform bool useInstancing;
 
 uniform vec3 colours[16];
 uniform float upperBounds[16];
@@ -30,8 +33,8 @@ vec3 terrainColor(float e) {
 }
 
 void main() {
-    vec3 color = terrainColor(elevation);
+    vec3 colour = useInstancing ? instanceColour : terrainColor(elevation);
     float lightFactor = calculateToonLighting();
     
-    fragColor = vec4(color * (useLighting ? lightFactor : 1.0), 1.0);
+    fragColour = vec4(colour * (useLighting ? lightFactor : 1.0), 1.0);
 }
