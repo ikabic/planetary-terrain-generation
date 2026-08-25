@@ -46,8 +46,9 @@ struct Shader {
     void setFloatArray(const char* n, const std::vector<float>& v) const { if (v.empty()) return;  glUniform1fv(glGetUniformLocation(ID, n), static_cast<GLsizei>(v.size()), v.data()); }
 };
 
-inline Shader mainShader, pixelationShader;
+inline Shader mainShader, pixelationShader, backgroundShader;
 inline void initShaders() {
     mainShader = Shader("main.vert", "main.frag");
     pixelationShader = Shader("pixelation.vert", "pixelation.frag");
+    backgroundShader = Shader("background.vert", "background.frag");
 }

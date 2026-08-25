@@ -52,6 +52,12 @@
     <None Include="pixelation.vert">
       <Filter>Source Files\Shaders</Filter>
     </None>
+    <None Include="background.frag">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="background.vert">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">

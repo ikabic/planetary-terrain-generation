@@ -119,6 +119,8 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         "${SRC_DIR}/main.vert"
 	"${SRC_DIR}/pixelation.frag"
         "${SRC_DIR}/pixelation.vert"
+	"${SRC_DIR}/background.frag"
+        "${SRC_DIR}/background.vert"
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
     COMMENT "Copying shaders..."
 )

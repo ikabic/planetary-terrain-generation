@@ -35,10 +35,12 @@ static int init() {
 static void render() {
     if (isPixelated) {
         postProcessor.begin();
+	    drawBackground();
         drawPlanet();
         postProcessor.render(pixelationShader);
 	} else {
         postProcessor.end();
+        drawBackground();
 		drawPlanet();
 	}
 

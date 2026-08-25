@@ -124,6 +124,26 @@ void drawSatellites() {
     mainShader.setBool("useInstancing", false);
 }
 
+static GLuint emptyVAO = 0;
+
+void drawBackground() {
+    if (emptyVAO == 0) glGenVertexArrays(1, &emptyVAO);
+
+    float time = static_cast<float>(glfwGetTime());
+
+    backgroundShader.use();
+    backgroundShader.setFloat("time", time);
+    backgroundShader.setFloat("seed", static_cast<float>(params.seed));
+
+    glDisable(GL_CULL_FACE);
+    glDepthMask(GL_FALSE);
+
+    glBindVertexArray(emptyVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    glDepthMask(GL_TRUE);
+}
+
 void drawDebugUI() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
