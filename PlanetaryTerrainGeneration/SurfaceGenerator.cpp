@@ -40,10 +40,10 @@ float SurfaceGenerator::generateElevation(int type, glm::vec3 pos) {
     switch (type) {
     case 0: {   // Gas/ice giants
         float warpX = domainWarp.GetNoise(pos.x, pos.y, pos.z);
-        float warpFrequency = randomiser.floatRange(0.01f, 0.055f);
+        float warpAmp = randomiser.floatRange(0.01f, 0.055f);
 
         // Latitudinal sine wave bands along Y-axis
-        float lat = pos.y + warpX * warpFrequency;
+        float lat = pos.y + warpX * warpAmp;
         float bands = (std::sin(lat * 11.0f + phase()) + std::sin(lat * 15.0f + phase()) + std::sin(lat * 27.0f + phase())) * 0.5f + 0.5f;
 
         // Cloud turbulence detail
@@ -56,15 +56,15 @@ float SurfaceGenerator::generateElevation(int type, glm::vec3 pos) {
     case 1: {   // Tectonic/terrestrial planets
         float warpX = domainWarp.GetNoise(pos.x, pos.y, pos.z);
         float warpY = domainWarp.GetNoise(pos.y, pos.z, pos.x);
-        float warpFrequency = 0.062f;
+        float warpAmp = 0.062f;
 
         // Continental base
-        float baseNoise = simplex.GetNoise(pos.x + warpX * warpFrequency, pos.y + warpY * warpFrequency, pos.z) * 0.5f + 0.5f;
+        float baseNoise = simplex.GetNoise(pos.x + warpX * warpAmp, pos.y + warpY * warpAmp, pos.z) * 0.5f + 0.5f;
         baseNoise = std::pow(baseNoise, 1.2f);
 
         // Mountain ridges
-        warpFrequency = 0.77f;
-        float mountainNoise = ridged.GetNoise(pos.x + warpX * warpFrequency, pos.y + warpY * warpFrequency, pos.z) * 0.5f + 0.5f;
+        warpAmp = 0.77f;
+        float mountainNoise = ridged.GetNoise(pos.x + warpX * warpAmp, pos.y + warpY * warpAmp, pos.z) * 0.5f + 0.5f;
 
         float height = baseNoise;
         float oceanThreshold = 0.45f, mountainHeight = 0.44f;
@@ -136,12 +136,12 @@ float SurfaceGenerator::generateElevation(int type, glm::vec3 pos) {
     }
 
     case 6: {   // Lava worlds
-        float warpFrequency = 0.65f, warpStrenght = 0.55f;
+        float warpFrequency = 0.65f, warpAmp = 0.55f;
         glm::vec3 warpedPos = pos + glm::vec3(
             simplex.GetNoise(pos.x * warpFrequency + 0.0f, pos.y * warpFrequency + 0.0f, pos.z * warpFrequency + 0.0f),
             simplex.GetNoise(pos.x * warpFrequency + 17.3f, pos.y * warpFrequency + 17.3f, pos.z * warpFrequency + 17.3f),
             simplex.GetNoise(pos.x * warpFrequency + 43.1f, pos.y * warpFrequency + 43.1f, pos.z * warpFrequency + 43.1f)
-        ) * warpStrenght;
+        ) * warpAmp;
 
         // Primary crack network
         float crackFrequency = 1.35f * 100.0f; // * 100.0f to cancel out the default 0.01f frequency of FastNoiseLite
@@ -177,9 +177,9 @@ float SurfaceGenerator::generateElevation(int type, glm::vec3 pos) {
     case 7: {   // Water worlds
         float warpX = domainWarp.GetNoise(pos.x, pos.y, pos.z);
         float warpY = domainWarp.GetNoise(pos.y, pos.z, pos.x);
-        float warpFrequency = 0.05f;
+        float warpAmp = 0.05f;
 
-        float baseNoise = simplex.GetNoise(pos.x + warpX * warpFrequency, pos.y + warpY * warpFrequency, pos.z) * 0.5f + 0.5f;
+        float baseNoise = simplex.GetNoise(pos.x + warpX * warpAmp, pos.y + warpY * warpAmp, pos.z) * 0.5f + 0.5f;
         baseNoise = std::pow(baseNoise, 2.4f);
 
         float rippleFrequency = 6.0f;
