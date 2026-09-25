@@ -2,7 +2,7 @@
 #include "PaletteManager.h"
 #include "Randomiser.h"
 
-static const glm::vec3 directions[6] = {
+static const glm::vec3 directions[6] = {    // local up (normal) of each cube face 
     { 0,  1,  0},
     { 0, -1,  0},
     {-1,  0,  0},
@@ -46,12 +46,13 @@ void Planet::randomiseTraits() {
     // Root traits
     size = randomiser.floatRange(minSize, maxSize);
 	temperature = randomiser.floatRange(0.0f, 1.0f);
-	type = randomiser.chance(alienProbability) ? ALIEN : static_cast<PlanetType>(randomiser.intRange(0, 7)); // chance to roll a completely random alien planet
+	isAlien = randomiser.chance(alienProbability); // chance to roll a completely random alien planet
+	type = static_cast<PlanetType>(randomiser.intRange(0, 7));
 
     float normalisedSize = (size - minSize) / (maxSize - minSize);
 
 	// Derived traits
-	palette = paletteManager.get(type, temperature);
+	palette = isAlien ? paletteManager.get(ALIEN, temperature) : paletteManager.get(type, temperature);
 
     int maxForSize = static_cast<int>(std::round(normalisedSize * maxSatellites)); // satellite count based on size
     satelliteCount = randomiser.intRange(0, maxForSize);

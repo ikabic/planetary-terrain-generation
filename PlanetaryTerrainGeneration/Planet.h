@@ -38,6 +38,7 @@ class Planet {
     float rotationSpeed = 0.2f;
     float axialTilt = 0.0f; // axial tilt in degrees
 
+	bool isAlien = false;
     PlanetType type;
     Palette palette;
 
