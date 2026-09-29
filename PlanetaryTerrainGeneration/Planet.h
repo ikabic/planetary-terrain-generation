@@ -20,7 +20,7 @@ enum PlanetType {
 
 class Planet {
     CubeFace faces[6];
-    int resolution = 64;
+    int resolution = 128;
 	unsigned int seed = 0;
 
     float temperature = 0.5f;
