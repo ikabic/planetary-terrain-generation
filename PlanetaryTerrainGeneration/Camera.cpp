@@ -4,8 +4,11 @@
 #include <algorithm>
 #include <cmath>
 
+#include "imgui.h"
+
 #include "Camera.h"
 #include "Util.h"
+#include "SurfaceGenerator.h"
 
 Camera::Camera(glm::vec3 startPos, glm::vec3 upVec, float startYaw, float startPitch): up(upVec), yaw(startYaw), pitch(startPitch) {
     radius = glm::length(startPos);
@@ -22,7 +25,15 @@ glm::mat4 Camera::getViewMatrix() const {
 }
 
 glm::mat4 Camera::getProjectionMatrix() const {
-    return glm::perspective(glm::radians(45.0f), (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
+
+    const float zoomThreshold = 3.0f;
+    if (radius < zoomThreshold) {
+        float t = (zoomThreshold - radius) / (zoomThreshold - minRadius);
+        projection[2][1] += t * 0.85f;
+    }
+
+    return projection;
 }
 
 void Camera::processOrbit(float deltaYaw, float deltaPitch) {
@@ -44,14 +55,15 @@ static void scrollCallback(GLFWwindow* /*w*/, double /*xoff*/, double yoff) {
 void updateCamera(double delta) {
     float move = camera.orbitSpeed * (float)delta;
 
-	//camera.processOrbit(move, 0.0f); // temporary auto rotation, adjust later
+    if (ImGui::GetIO().WantCaptureKeyboard) return;
 
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) isPixelated = !isPixelated;
+    if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) params.lighting = !params.lighting;
 
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) camera.processOrbit(-move, 0.0f);
-    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) camera.processOrbit(move, 0.0f);
-    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) camera.processOrbit(0.0f, move);
-    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) camera.processOrbit(0.0f, -move);
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) camera.processOrbit(-move, 0.0f);
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) camera.processOrbit(move, 0.0f);
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) camera.processOrbit(0.0f, move);
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) camera.processOrbit(0.0f, -move);
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) glfwSetWindowShouldClose(window, true);
 }

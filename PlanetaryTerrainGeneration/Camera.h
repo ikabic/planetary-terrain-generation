@@ -5,14 +5,14 @@
 
 class Camera {
 public:
-    float radius = 3.0f;   // Distance from origin
+    float radius = 4.5f;   // Distance from origin
     float yaw = 0.0f;      // Horizontal angle (degrees)
     float pitch = 0.0f;    // Vertical angle (degrees, clamped)
 
     float orbitSpeed = 30.0f; // Degrees per second when key held
     float zoomSpeed = 0.5f;
-    float minRadius = 1.5f;
-    float maxRadius = 10.0f;
+    float minRadius = 2.0f;
+    float maxRadius = 8.0f;
     float pitchLimit = 89.0f;
 
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -28,7 +28,7 @@ public:
     void processZoom(float delta);
 };
 
-inline Camera camera(glm::vec3(0.0f, 0.0f, 4.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 0.0f);;
+inline Camera camera(glm::vec3(0.0f, 0.0f, 4.5f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 0.0f);;
 
 void updateCamera(double delta);
 void setupCallbacks(GLFWwindow* window);
