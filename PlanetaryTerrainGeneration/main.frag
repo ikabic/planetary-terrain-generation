@@ -20,9 +20,9 @@ float calculateToonLighting() {
 
     float light = max(dot(normal, lightDir), 0.0);
 
-    if (light > 0.75) return 1.00;
-    else if (light > 0.2) return 0.75;
-    else return 0.45;
+    if (light > 0.45) return 1.00;
+    else if (light > 0.1) return 0.9;
+    else return 0.8;
 }
 
 vec3 terrainColor(float e) {
