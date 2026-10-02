@@ -14,8 +14,6 @@ public:
 
     void setSeed(uint32_t newSeed) { seed = newSeed; generator.seed(seed); }
 
-    uint32_t deriveSeed(const std::string& name);
-
 	float floatRange(float min, float max, float bias = 1.0f); // bias > 1.0f skews towards min, bias < 1.0f skews towards max
     int intRange(int min, int max);
 

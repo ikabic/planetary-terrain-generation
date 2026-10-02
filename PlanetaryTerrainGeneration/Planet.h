@@ -26,8 +26,6 @@ class Planet {
     float temperature = 0.5f;
     float size = 1.0f;
 
-    bool hasAtmosphere = true;
-
     int satelliteCount = 0;
     std::vector<Satellite> satellites;
 

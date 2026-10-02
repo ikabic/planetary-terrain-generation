@@ -23,12 +23,3 @@ bool Randomiser::chance(float probability) {
 	std::bernoulli_distribution distribution(probability);
 	return distribution(generator);
 }
-
-uint32_t Randomiser::deriveSeed(const std::string& name) {
-	std::hash<std::string> hasher;
-
-	uint32_t derivedSeed = randomiser.getSeed() ^ static_cast<uint32_t>(hasher(name));
-	generator.seed(derivedSeed);
-
-	return derivedSeed;
-}

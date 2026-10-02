@@ -175,7 +175,6 @@ Palette generateSelectedPalette(PaletteParams paletteParams) {
 }
 
 Palette generatePalette(const PlanetPaletteConfig& planetConfig, float temperature) {
-	randomiser.deriveSeed("palette");
 	PaletteParams paletteParams(generatePaletteParams(planetConfig, temperature));
 
 	return paletteParams.type == CUSTOM 

@@ -24,19 +24,17 @@ SurfaceGenerator::SurfaceGenerator() {
 }
 
 void SurfaceGenerator::seedGenerator() {
-	uint32_t seed = randomiser.deriveSeed("terrain");
+    uint32_t seed = randomiser.getSeed();
 
 	simplex.SetSeed(seed);
 	domainWarp.SetSeed(seed);
 	ridged.SetSeed(seed);
 	cellular.SetSeed(seed);
+
+	for (int i = 0; i < 3; i++) phases[i] = randomiser.floatRange(0.0f, glm::two_pi<float>());
 }
 
 float SurfaceGenerator::generateElevation(int type, glm::vec3 pos) {
-	seedGenerator();
-
-	auto phase = []() { return randomiser.floatRange(0, glm::two_pi<float>()); };
-
     switch (type) {
     case 0: {   // Gas/ice giants
         float warpX = domainWarp.GetNoise(pos.x, pos.y, pos.z);
@@ -44,7 +42,7 @@ float SurfaceGenerator::generateElevation(int type, glm::vec3 pos) {
 
         // Latitudinal sine wave bands along Y-axis
         float lat = pos.y + warpX * warpAmp;
-        float bands = (std::sin(lat * 11.0f + phase()) + std::sin(lat * 15.0f + phase()) + std::sin(lat * 27.0f + phase())) * 0.5f + 0.5f;
+        float bands = (std::sin(lat * 11.0f + phases[0]) + std::sin(lat * 15.0f + phases[1]) + std::sin(lat * 27.0f + phases[2])) * 0.5f + 0.5f;
 
         // Cloud turbulence detail
         float cloudDetail = simplex.GetNoise(pos.x * 2.5f, pos.y * 2.5f, pos.z * 2.5f) * 0.5f + 0.5f;

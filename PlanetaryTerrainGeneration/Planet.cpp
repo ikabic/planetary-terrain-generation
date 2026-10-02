@@ -27,15 +27,12 @@ void Planet::draw() const {
     for (auto& face : faces)
         face.draw();
 }
-
 void Planet::drawInstanced(GLsizei instanceCount) const {
     for (auto& face : faces)
         face.drawInstanced(instanceCount);
 }
 
 void Planet::randomiseTraits() {
-    randomiser.deriveSeed("traits");
-
 	constexpr float minSize = 0.9f, maxSize = 1.1f;                                                         // size params
 	constexpr float alienProbability = 0.05f;                                                               // type params
 	constexpr int maxSatellites = 8;                                                                        // satellite params
@@ -62,22 +59,17 @@ void Planet::randomiseTraits() {
     
     // axial tilt based on satellite count and chance for extreme tilt
 	axialTilt = satelliteCount == 0 || randomiser.chance(extremeTiltProbability) ? randomiser.floatRange(minTilt, extremeTilt) : randomiser.floatRange(minTilt, maxTilt, 2.0f);
-	
-    hasAtmosphere = randomiser.chance(normalisedSize); // atmosphere based on size
-	// roll for athmosphere thickness and pattern based on temp and rotation speed
 
     float ringChance = baseRingChance - satelliteCount * perSatellitePenalty;
     hasRings = randomiser.chance(std::max(0.0f, ringChance));
 }
 
 void Planet::generateSatellites() {
-    randomiser.deriveSeed("satellite");
     satellites.clear();
     satellites.resize(satelliteCount);
 }
 
 void Planet::generateRings() {
-    randomiser.deriveSeed("ring");
     ringParticles.clear();
 
 	ringCount = randomiser.intRange(1, 2);
