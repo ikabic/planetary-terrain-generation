@@ -28,7 +28,7 @@ void CubeFace::build(glm::vec3 localUp, int type) {
             float rawElevation = surfaceGenerator.generateElevation(type, pointOnUnitSphere);
 
             float physicalElevation, deformationCutoff = 0.45f;
-            if (rawElevation > deformationCutoff) physicalElevation = 1.0f + (rawElevation - deformationCutoff) * 0.01f;
+            if (rawElevation > deformationCutoff) physicalElevation = 1.0f + (rawElevation - deformationCutoff) * params.height;
             else physicalElevation = 1.0f;
 
             glm::vec3 displacedPosition = pointOnUnitSphere * physicalElevation;

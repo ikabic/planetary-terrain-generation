@@ -1,5 +1,8 @@
 #include "PostProcessor.h"
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+
 void PostProcessor::init(int w, int h) {
     this->width = w;
     this->height = h;
@@ -84,6 +87,43 @@ void PostProcessor::render(const Shader& shader, float pixelScale) {
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
+}
+
+void PostProcessor::exportPixelatedImage(const std::string& filename, const Shader& pixelShader, float pixelScale) {
+    GLuint tempFBO, tempTex;
+    glGenFramebuffers(1, &tempFBO);
+    glGenTextures(1, &tempTex);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, tempFBO);
+    glBindTexture(GL_TEXTURE_2D, tempTex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tempTex, 0);
+
+    glViewport(0, 0, width, height);
+    glDisable(GL_DEPTH_TEST);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    pixelShader.use();
+    pixelShader.setFloat("pixelScale", pixelScale);
+    pixelShader.setVec2("resolution", glm::vec2((float)width, (float)height));
+    pixelShader.setInt("screenTexture", 0);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, fboTexture);
+
+    glBindVertexArray(quadVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+
+    std::vector<unsigned char> pixels(width * height * 3);
+    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels.data());
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDeleteTextures(1, &tempTex);
+    glDeleteFramebuffers(1, &tempFBO);
+
+    stbi_flip_vertically_on_write(true);
+    stbi_write_png(filename.c_str(), width, height, 3, pixels.data(), width * 3);
 }
 
 void PostProcessor::resize(int newWidth, int newHeight) {

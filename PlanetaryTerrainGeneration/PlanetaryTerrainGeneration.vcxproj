@@ -138,6 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PaletteGenerator.cpp" />
     <ClCompile Include="PaletteManager.cpp" />
@@ -151,6 +152,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CubeFace.h" />
+    <ClInclude Include="GUI.h" />
     <ClInclude Include="Palette.h" />
     <ClInclude Include="PaletteGenerator.h" />
     <ClInclude Include="PaletteManager.h" />

@@ -74,6 +74,14 @@ target_include_directories(imgui PUBLIC
 )
 target_link_libraries(imgui PUBLIC glfw opengl32)
 
+# stb
+FetchContent_Declare(
+    stb
+    GIT_REPOSITORY https://github.com/nothings/stb.git
+    GIT_TAG        master
+)
+FetchContent_MakeAvailable(stb)
+
 # Sources ----------------------------------------------------------------------
 
 set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/PlanetaryTerrainGeneration")
@@ -89,6 +97,7 @@ add_executable(${PROJECT_NAME}
     ${SRC_DIR}/PaletteGenerator.cpp
     ${SRC_DIR}/Randomiser.cpp
     ${SRC_DIR}/SurfaceGenerator.cpp
+    ${SRC_DIR}/GUI.cpp
 )
 
 if(MSVC)
@@ -100,6 +109,7 @@ endif()
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${SRC_DIR}
     ${fastnoiselite_SOURCE_DIR}/Cpp
+    ${stb_SOURCE_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE

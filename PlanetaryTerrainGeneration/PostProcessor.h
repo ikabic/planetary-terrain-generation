@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+
 #include "Shader.h"
 
 class PostProcessor {
@@ -12,6 +13,7 @@ public:
     void begin();
 	void end();
     void render(const Shader& shader, float pixelScale = 6.0f);
+	void exportPixelatedImage(const std::string& filename, const Shader& pixelShader, float pixelScale = 6.0f);
     void resize(int newWidth, int newHeight);
     void cleanup();
 

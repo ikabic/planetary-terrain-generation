@@ -58,7 +58,7 @@ void updateCamera(double delta) {
     if (ImGui::GetIO().WantCaptureKeyboard) return;
 
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) isPixelated = !isPixelated;
-    if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) params.lighting = !params.lighting;
+    if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) params.applyLighting = !params.applyLighting;
 
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) camera.processOrbit(-move, 0.0f);
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) camera.processOrbit(move, 0.0f);

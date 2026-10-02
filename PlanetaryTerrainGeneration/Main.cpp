@@ -8,6 +8,7 @@
 #include "Renderer.h"
 #include "Camera.h"
 #include "PostProcessor.h"
+#include "GUI.h"
 
 static int init() {
     glfwInit();
@@ -44,7 +45,7 @@ static void render() {
 		drawPlanet();
 	}
 
-    drawDebugUI();
+    drawHUD();
 }
 
 static void update(double delta) {
