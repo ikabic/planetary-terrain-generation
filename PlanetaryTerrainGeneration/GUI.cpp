@@ -15,7 +15,7 @@
 #include "stb_image.h"
 
 static GLuint textInputTex = 0, alphaTex = 0, symbolTex = 0;
-static ImFont* fontDefault = nullptr;
+static ImFont *fontDefault = nullptr, *fontLarge = nullptr;
 static char inputTextBuffer[128] = "";
 
 void initImGUI(GLFWwindow* window) {
@@ -30,9 +30,9 @@ void initImGUI(GLFWwindow* window) {
     fontConfig.OversampleV = 1;
 
     fontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/BoldPixels.ttf", 16.0f, &fontConfig);
-    if (fontDefault != nullptr) {
-        io.FontDefault = fontDefault;
-    }
+    if (fontDefault != nullptr) io.FontDefault = fontDefault;
+
+    fontLarge = io.Fonts->AddFontFromFileTTF("assets/fonts/BoldPixels.ttf", 24.0f, &fontConfig);
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
@@ -208,6 +208,51 @@ void drawHUD() {
 
     ImGui::End();
     ImGui::PopStyleVar(3);
+
+    std::string prefixText = "SEED: ";
+    std::string seedValueText = std::to_string(params.seed);
+
+    if (fontLarge) ImGui::PushFont(fontLarge);
+
+    ImVec2 prefixSize = ImGui::CalcTextSize(prefixText.c_str());
+    ImVec2 valueSize = ImGui::CalcTextSize(seedValueText.c_str());
+    float fontHeight = ImGui::GetFontSize();
+
+    if (fontLarge) ImGui::PopFont();
+
+    float totalWidth = prefixSize.x + valueSize.x;
+    float labelPaddingX = 20.0f;
+    float labelWidth = totalWidth + labelPaddingX * 2.0f;
+
+    float paddingTop = 16.0f;
+    float labelHeight = fontHeight + 12.0f + paddingTop;
+
+    ImGui::SetNextWindowPos(ImVec2(viewport->WorkPos.x + (viewport->WorkSize.x - labelWidth) * 0.5f, viewport->WorkPos.y + pad));
+    ImGui::SetNextWindowSize(ImVec2(labelWidth, labelHeight));
+    ImGui::SetNextWindowBgAlpha(0.0f);
+
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+
+    ImGui::Begin("##TopCenterSeedHUD", nullptr,
+        ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings |
+        ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_AlwaysAutoResize);
+
+    if (fontLarge) ImGui::PushFont(fontLarge);
+
+    float textPosX = (labelWidth - totalWidth) * 0.5f;
+    float textPosY = (labelHeight - fontHeight) * 0.5f;
+
+    ImGui::SetCursorPos(ImVec2(textPosX, textPosY));
+    ImGui::TextColored(ImVec4(0.86f, 0.86f, 0.67f, 1.00f), "%s", prefixText.c_str());
+
+    ImGui::SameLine(0.0f, 0.0f);
+    ImGui::TextColored(ImVec4(0.95f, 0.95f, 0.90f, 1.00f), "%s", seedValueText.c_str());
+
+    if (fontLarge) ImGui::PopFont();
+
+    ImGui::End();
+    ImGui::PopStyleVar(2);
 
     // bottom left rotation buttons 
     const ImVec2 keySize(64.0f, 64.0f);
