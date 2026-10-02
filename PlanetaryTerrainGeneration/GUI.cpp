@@ -199,6 +199,13 @@ void drawHUD() {
         planet.build();
     }
 
+    ImGuiIO& io = ImGui::GetIO();
+    if (!io.WantCaptureKeyboard && ImGui::IsKeyPressed(ImGuiKey_Space)) {
+        params.seed = static_cast<int>(glfwGetTime() * 100000.0f);
+        randomiser.setSeed(params.seed);
+        planet.build();
+    }
+
 	// export picture button
     float infoBtnX = randBtnX + iconSize.x + topGap;
     ImGui::SetCursorScreenPos(ImVec2(infoBtnX, topStartPos.y));

@@ -100,6 +100,10 @@ add_executable(${PROJECT_NAME}
     ${SRC_DIR}/GUI.cpp
 )
 
+if (MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
+
 if(MSVC)
     target_link_options(${PROJECT_NAME} PRIVATE
         $<$<CONFIG:Release>:/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup>
