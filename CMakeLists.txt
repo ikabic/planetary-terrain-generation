@@ -72,7 +72,8 @@ target_include_directories(imgui PUBLIC
     ${imgui_SOURCE_DIR}
     ${imgui_SOURCE_DIR}/backends
 )
-target_link_libraries(imgui PUBLIC glfw opengl32)
+find_package(OpenGL REQUIRED)
+target_link_libraries(imgui PUBLIC glfw OpenGL::GL)
 
 # stb
 FetchContent_Declare(
@@ -87,10 +88,8 @@ FetchContent_MakeAvailable(stb)
 set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/PlanetaryTerrainGeneration")
 
 if(WIN32)
-    # Include the Windows resource file
     set(APP_ICON_RESOURCE "${SRC_DIR}/icon.rc")
 elseif(APPLE)
-    # Configure macOS app bundle icon
     set(MACOSX_BUNDLE_ICON_FILE app.icns)
     set(APP_ICON_RESOURCE "${SRC_DIR}/assets/app.icns")
     set_source_files_properties(${APP_ICON_RESOURCE} PROPERTIES
@@ -112,7 +111,6 @@ add_executable(${PROJECT_NAME}
     ${SRC_DIR}/GUI.cpp
     ${SRC_DIR}/icon.rc
 )
-
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     OUTPUT_NAME "Planet Engine"
@@ -145,7 +143,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     libglew_static
     glm::glm
     imgui
-    opengl32
+    OpenGL::GL
     nlohmann_json::nlohmann_json
 )
 
@@ -174,9 +172,7 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 
 # Release flags ----------------------------------------------------------------
 
-target_compile_options(${PROJECT_NAME} PRIVATE
-    $<$<CONFIG:Release>:/O2 /GL>
-)
-target_link_options(${PROJECT_NAME} PRIVATE
-    $<$<CONFIG:Release>:/LTCG>
-)
+if(MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE $<$<CONFIG:Release>:/O2 /GL>)
+    target_link_options(${PROJECT_NAME} PRIVATE $<$<CONFIG:Release>:/LTCG>)
+endif()

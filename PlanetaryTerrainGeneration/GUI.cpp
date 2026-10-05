@@ -25,6 +25,8 @@ void initImGUI(GLFWwindow* window) {
 
     ImGuiIO& io = ImGui::GetIO();
 
+    io.MouseDrawCursor = true;
+
     ImFontConfig fontConfig;
     fontConfig.PixelSnapH = true;
     fontConfig.OversampleH = 1;
