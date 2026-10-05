@@ -1,0 +1,114 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            platform: windows
+            artifact_name: PlanetEngine-Windows.zip
+          - os: macos-latest
+            platform: macos
+            artifact_name: PlanetEngine-macOS.zip
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Ninja (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ninja
+
+      # Windows
+      - name: Configure CMake (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          cmake --build build --config Release
+
+      - name: Package Release (Windows)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          # Create staging directory
+          New-Item -ItemType Directory -Path staging
+          
+          # Copy target executable, shaders, and assets
+          Copy-Item "build/Release/Planet Engine.exe" -Destination "staging/"
+          Copy-Item "build/Release/*.vert" -Destination "staging/"
+          Copy-Item "build/Release/*.frag" -Destination "staging/"
+          Copy-Item "build/Release/assets" -Destination "staging/assets" -Recurse
+
+          # Create zip archive
+          Compress-Archive -Path "staging/*" -DestinationPath "${{ matrix.artifact_name }}"
+
+      # macOS
+      - name: Configure CMake (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          cmake -B build -S . -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          cmake --build build --config Release
+
+      - name: Package Release (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          mkdir staging
+          
+          # Copy build output files
+          cp "build/Planet Engine" staging/ 2>/dev/null || cp -R "build/Planet Engine.app" staging/ 2>/dev/null || true
+          cp build/*.vert staging/ 2>/dev/null || true
+          cp build/*.frag staging/ 2>/dev/null || true
+          cp -R build/assets staging/ 2>/dev/null || true
+
+          # Compress into zip archive
+          cd staging && zip -r "../${{ matrix.artifact_name }}" .
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform }}-build
+          path: ${{ matrix.artifact_name }}
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Windows Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-build
+
+      - name: Download macOS Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-build
+
+      - name: Publish Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            PlanetEngine-Windows.zip
+            PlanetEngine-macOS.zip
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
