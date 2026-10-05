@@ -86,6 +86,18 @@ FetchContent_MakeAvailable(stb)
 
 set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/PlanetaryTerrainGeneration")
 
+if(WIN32)
+    # Include the Windows resource file
+    set(APP_ICON_RESOURCE "${SRC_DIR}/icon.rc")
+elseif(APPLE)
+    # Configure macOS app bundle icon
+    set(MACOSX_BUNDLE_ICON_FILE app.icns)
+    set(APP_ICON_RESOURCE "${SRC_DIR}/assets/app.icns")
+    set_source_files_properties(${APP_ICON_RESOURCE} PROPERTIES
+        MACOSX_PACKAGE_LOCATION "Resources"
+    )
+endif()
+
 add_executable(${PROJECT_NAME}
     ${SRC_DIR}/Main.cpp
     ${SRC_DIR}/Camera.cpp
@@ -98,7 +110,19 @@ add_executable(${PROJECT_NAME}
     ${SRC_DIR}/Randomiser.cpp
     ${SRC_DIR}/SurfaceGenerator.cpp
     ${SRC_DIR}/GUI.cpp
+    ${SRC_DIR}/icon.rc
 )
+
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    OUTPUT_NAME "Planet Engine"
+)
+
+if(APPLE)
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        MACOSX_BUNDLE_ICON_FILE app.icns
+    )
+endif()
 
 if (MSVC)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")

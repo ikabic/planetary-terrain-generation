@@ -184,7 +184,15 @@ void drawHUD() {
 
     if (drawSingleSpriteInputText("##seedInput", "Planet Seed", inputTextBuffer, sizeof(inputTextBuffer), textInputTex, pillSize, ImGuiInputTextFlags_EnterReturnsTrue)) {
         if (strlen(inputTextBuffer) > 0) {
-            params.seed = hashSeed(inputTextBuffer);
+            std::string inputStr(inputTextBuffer);
+            bool isNumeric = !inputStr.empty() && std::all_of(inputStr.begin() + (inputStr[0] == '-' ? 1 : 0), inputStr.end(), ::isdigit);
+
+            if (isNumeric) {
+                try { params.seed = std::stoul(inputStr); }
+                catch (...) { params.seed = hashSeed(inputTextBuffer); }
+            }
+            else params.seed = hashSeed(inputTextBuffer);
+            
             randomiser.setSeed(params.seed);
             planet.build();
         }
@@ -198,7 +206,6 @@ void drawHUD() {
         randomiser.setSeed(params.seed);
         planet.build();
     }
-
     ImGuiIO& io = ImGui::GetIO();
     if (!io.WantCaptureKeyboard && ImGui::IsKeyPressed(ImGuiKey_Space)) {
         params.seed = static_cast<int>(glfwGetTime() * 100000.0f);
