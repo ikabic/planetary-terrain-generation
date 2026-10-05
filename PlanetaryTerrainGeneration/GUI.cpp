@@ -17,6 +17,7 @@
 static GLuint textInputTex = 0, alphaTex = 0, symbolTex = 0;
 static ImFont *fontDefault = nullptr, *fontLarge = nullptr;
 static char inputTextBuffer[128] = "";
+static double exportNotificationTime = -100.0;
 
 void initImGUI(GLFWwindow* window) {
     IMGUI_CHECKVERSION();
@@ -217,11 +218,46 @@ void drawHUD() {
     float infoBtnX = randBtnX + iconSize.x + topGap;
     ImGui::SetCursorScreenPos(ImVec2(infoBtnX, topStartPos.y));
     if (drawRowButton("##keyPhoto", symbolTex, 16, 1, iconSize, "Export planet image")) {
-        postProcessor.exportPixelatedImage("planet_" + std::to_string(params.seed) + ".png", pixelationShader);
+		std::string exportName = getUniqueFilename("planet_" + std::to_string(params.seed), ".png");
+        postProcessor.exportPixelatedImage(exportName, pixelationShader);
+        exportNotificationTime = glfwGetTime();
     }
 
     ImGui::End();
     ImGui::PopStyleVar(3);
+
+    // export picture feedback popup
+    double currentTime = glfwGetTime();
+    double elapsedTime = currentTime - exportNotificationTime;
+    double displayDuration = 1.5;
+    double fadeDuration = 1.0;
+
+    if (elapsedTime < displayDuration || true) {
+        float alpha = 1.0f;
+        if (elapsedTime > (displayDuration - fadeDuration)) {
+            alpha = static_cast<float>((displayDuration - elapsedTime) / fadeDuration);
+        }
+
+        ImGui::SetNextWindowPos(ImVec2(pad, pad + 4.0f));
+        ImGui::SetNextWindowBgAlpha(0.65f * alpha);
+
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(12.0f, 8.0f));
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+
+        ImGui::Begin("##exportNotification", nullptr,
+            ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings |
+            ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_AlwaysAutoResize |
+            ImGuiWindowFlags_NoBackground);
+
+        if (fontDefault) ImGui::PushFont(fontDefault);
+
+        ImGui::TextColored(ImVec4(0.40f, 0.90f, 0.40f, alpha), "Successfully exported planet image!");
+
+        if (fontDefault) ImGui::PopFont();
+
+        ImGui::End();
+        ImGui::PopStyleVar(2);
+    }
 
     std::string prefixText = "SEED: ";
     std::string seedValueText = std::to_string(params.seed);
