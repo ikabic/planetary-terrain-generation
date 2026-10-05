@@ -37,7 +37,7 @@ inline uint32_t hashSeed(const std::string& input) {
 namespace fs = std::filesystem;
 
 inline std::string getUniqueFilename(const std::string& fileName, const std::string& extension = "") {
-    if (!fs::exists(fileName + extension)) return fileName;
+    if (!fs::exists(fileName + extension)) return fileName + extension;
 
     int counter = 1;
     while (true) {
