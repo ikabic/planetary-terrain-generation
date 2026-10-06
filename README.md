@@ -1,8 +1,8 @@
 <h1 align="center">
   <br>
-   <a href="/">
-     <img width="1800" height="222" alt="banner" src="https://github.com/user-attachments/assets/94fcfec7-3955-4165-a643-d3c01bb53aec" />
-</a>
+  <a href="/">
+     <img width="1800" height="300" alt="banner" src="https://github.com/user-attachments/assets/089fbc7d-6618-4556-bb1a-a0930207f16f" />
+  </a>
   <br>
 </h1>
 
@@ -22,7 +22,7 @@
 </div>
 
 <p align="center">
-  A C++ procedural planet generator that creates diverse virtual planets and their circumplanetary systems using deterministic, noise-based terrain generation. The program was developed as part of an undergraduate thesis on the topic:
+  A C++ procedural planet generator that creates diverse virtual planets and their circumplanetary systems using deterministic, noise-based terrain generation. The program was developed as part of an undergraduate thesis titled:
   <br>
   <strong>"Procedural planet generation using cube spherisation"</strong>
 </p>
@@ -79,13 +79,26 @@
 
 ## Installation
 
-To run the program download the latest release:
+To run the program download the latest release from the [**Releases**](../../releases) page for your operating system.
 
+### Windows
 1. Go to the [**Releases**](../../releases) page.
-2. Download the latest `.zip` archive.
+2. Download the latest Windows `.zip` archive.
 3. Extract the archive.
-4. Run `PlanetaryTerrainGeneration.exe`.
+4. Run `Planet Engine.exe`.
 
 The release archive contains the executable and all required assets.
 
 **Note:** Windows may display a security warning when running the executable because the application is not digitally signed. If you trust the downloaded release, select **More info → Run anyway** to launch the application.
+
+### macOS
+1. Download the latest macOS `.zip` archive.
+2. Extract the archive.
+3. Open **Terminal** and navigate to the extracted folder.
+4. Run the executable:
+
+```bash
+./Planet\ Engine
+```
+
+**Note:** macOS may block the executable because it was downloaded from the internet. If this occurs, consult the macOS security prompt for instructions on allowing the application to run.
