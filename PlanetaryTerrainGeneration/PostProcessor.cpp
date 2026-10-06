@@ -90,6 +90,18 @@ void PostProcessor::render(const Shader& shader, float pixelScale) {
 }
 
 void PostProcessor::exportPixelatedImage(const std::string& filename, const Shader& pixelShader, float pixelScale) {
+    GLint previousViewport[4];
+    glGetIntegerv(GL_VIEWPORT, previousViewport);
+
+    GLint previousFBO;
+    glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &previousFBO);
+
+    GLint previousVAO;
+    glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &previousVAO);
+
+    GLint previousActiveTexture;
+    glGetIntegerv(GL_ACTIVE_TEXTURE, &previousActiveTexture);
+
     GLuint tempFBO, tempTex;
     glGenFramebuffers(1, &tempFBO);
     glGenTextures(1, &tempTex);
@@ -113,14 +125,17 @@ void PostProcessor::exportPixelatedImage(const std::string& filename, const Shad
 
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
-    glBindVertexArray(0);
 
     std::vector<unsigned char> pixels(width * height * 3);
     glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels.data());
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glDeleteTextures(1, &tempTex);
     glDeleteFramebuffers(1, &tempFBO);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, previousFBO);
+    glBindVertexArray(previousVAO);
+    glActiveTexture(previousActiveTexture);
+    glViewport(previousViewport[0], previousViewport[1], previousViewport[2], previousViewport[3]);
 
     stbi_flip_vertically_on_write(true);
     stbi_write_png(filename.c_str(), width, height, 3, pixels.data(), width * 3);
