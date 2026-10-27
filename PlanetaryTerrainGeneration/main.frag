@@ -1,4 +1,4 @@
-﻿#version 330 core
+#version 330 core
 
 in float elevation;
 in vec3 worldPos;
